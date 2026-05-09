@@ -1,4 +1,4 @@
-# OCO — Gestione Trasloco Intelligente
+# OCO — moving management web app
 
 **OCO** is a self-hosted moving management web app. Photograph boxes, let AI identify contents, plan transports, and track where everything is.
 
