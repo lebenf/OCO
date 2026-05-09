@@ -52,6 +52,70 @@ make init-db
 
 Navigate to `http://localhost:3000` and log in with your admin credentials.
 
+## Development (no Docker)
+
+Run backend and frontend directly with the local venv.
+
+### Requirements
+
+- Python 3.12+
+- Node.js 20+
+- `.venv/` already created at project root (see below if missing)
+
+### Setup
+
+```bash
+# Create venv if missing
+python3 -m venv .venv
+
+# Install backend dependencies
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
+```
+
+### Configure
+
+```bash
+cp .env.example .env
+# Edit .env — set SECRET_KEY, INITIAL_ADMIN_PASSWORD at minimum
+```
+
+### Run migrations + create admin
+
+```bash
+source .venv/bin/activate
+cd backend
+alembic upgrade head
+python -m app.core.init_db
+cd ..
+```
+
+### Start backend
+
+```bash
+source .venv/bin/activate
+cd backend
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### Start frontend (separate terminal)
+
+```bash
+cd frontend
+npm run dev
+# Vite dev server on http://localhost:3000
+# Proxies /api/* → http://localhost:8000
+```
+
+Open `http://localhost:3000` and log in with your admin credentials.
+
+> **Note:** `DATABASE_URL` in `.env` uses a relative path (`./data/oco.db`). When running from `backend/`, the DB is created at `backend/data/oco.db`. Keep both terminals consistent — always `cd backend` before running backend commands.
+
+---
+
 ## Documentation
 
 | File | Content |

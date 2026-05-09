@@ -1,0 +1,37 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "vue-tsc --noEmit",
+    "check-i18n": "node scripts/check-i18n.js"
+  },
+  "dependencies": {
+    "axios": "^1.16.0",
+    "jsqr": "^1.4.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.12",
+    "vue-i18n": "^9.14.5",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.10",
+    "happy-dom": "^20.9.0",
+    "jsdom": "^29.1.1",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^1.6.1",
+    "vue-tsc": "^2.1.8"
+  }
+}

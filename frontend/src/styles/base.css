@@ -1,0 +1,49 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright 2026 Lorenzo Benfenati */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  background: var(--oco-bg);
+  color: var(--oco-ink);
+  font-family: var(--oco-font);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.mono { font-family: var(--oco-mono); font-feature-settings: 'zero','ss01'; }
+.num  { font-variant-numeric: tabular-nums; }
+
+h1, h2, h3, h4, h5, h6 { margin: 0; line-height: 1.2; }
+
+a { color: var(--oco-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button { font-family: var(--oco-font); cursor: pointer; }
+input, select, textarea { font-family: var(--oco-font); }
+
+/* Global input / select style */
+.oco-input,
+input[type="text"], input[type="number"], input[type="email"],
+input[type="password"], input[type="date"], input[type="search"],
+select, textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--oco-surface);
+  border: 1px solid var(--oco-line-strong);
+  border-radius: var(--oco-r-md);
+  color: var(--oco-ink);
+  font-size: 14px;
+  font-family: var(--oco-font);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.oco-input:focus, input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--oco-primary);
+  box-shadow: 0 0 0 3px var(--oco-primary-soft);
+}
+select { cursor: pointer; }
+textarea { resize: vertical; min-height: 80px; }

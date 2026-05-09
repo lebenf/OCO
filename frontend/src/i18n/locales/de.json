@@ -1,0 +1,343 @@
+{
+  "app": {
+    "tagline": "Intelligente Umzugsverwaltung"
+  },
+  "nav": {
+    "section_main": "Umzug",
+    "home": "Start",
+    "containers": "Kisten",
+    "transfers": "Transporte",
+    "admin": "Admin",
+    "logout": "Abmelden",
+    "boxes": "Kartons",
+    "scan": "Scan",
+    "inbox": "Posteingang",
+    "destinations": "Ziele",
+    "search": "Suche",
+    "users": "Benutzer",
+    "houses": "Häuser",
+    "ai_config": "KI-Config",
+    "settings": "Einstellungen"
+  },
+  "ai": {
+    "hint_type": {
+      "label": "Objekttyp",
+      "auto": "Auto",
+      "single": "Einzeln",
+      "set": "Set",
+      "collection": "Sammlung",
+      "book": "Buch"
+    },
+    "item_status": {
+      "draft": "In Bearbeitung",
+      "draft_ai_done": "Bereit",
+      "draft_ai_failed": "KI-Fehler",
+      "confirmed": "Bestätigt"
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Umzugsverwaltung",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "loading": "Anmeldung...",
+      "error": "Ungültige Anmeldedaten"
+    }
+  },
+  "container": {
+    "status": {
+      "open": "Offen",
+      "closed": "Geschlossen",
+      "sealed": "Versiegelt"
+    },
+    "card": {
+      "items": "{n} Objekte",
+      "children": "{n} verschachtelt"
+    },
+    "list": {
+      "title": "Kisten",
+      "create": "Neue Kiste",
+      "search": "Suchen...",
+      "all_statuses": "Alle Status",
+      "loading": "Laden...",
+      "empty": "Keine Kisten gefunden"
+    },
+    "detail": {
+      "edit": "Bearbeiten",
+      "close": "Schließen",
+      "close_blocked": "Es gibt Objekte in Überprüfung. Verwende 'Trotzdem schließen', um sie automatisch zu bestätigen.",
+      "close_anyway": "Trotzdem schließen",
+      "seal": "Versiegeln",
+      "in": "In",
+      "photos": "Fotos",
+      "add_photo": "Foto hinzufügen",
+      "add_item": "Objekt hinzufügen",
+      "qr": "QR-Code",
+      "children": "Verschachtelte Kisten",
+      "items": "Objekte",
+      "in_review": "In Überprüfung",
+      "no_items": "Keine bestätigten Objekte",
+      "no_drafts": "Keine Objekte in Überprüfung"
+    },
+    "create": {
+      "title": "Neue Kiste",
+      "description": "Beschreibung",
+      "width_cm": "Breite (cm)",
+      "depth_cm": "Tiefe (cm)",
+      "height_cm": "Höhe (cm)",
+      "submit": "Kiste erstellen",
+      "saving": "Erstellen...",
+      "success": "Kiste erstellt!",
+      "add_photo_prompt": "Foto zur Kiste hinzufügen?",
+      "upload_photo": "Foto hochladen",
+      "view_detail": "Details ansehen",
+      "back_to_list": "Zurück zur Liste"
+    },
+    "edit": {
+      "title": "Kiste bearbeiten",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "cancel": "Abbrechen"
+    },
+    "nesting": {
+      "label": "Übergeordneter Behälter (optional)",
+      "none": "Keiner"
+    },
+    "code_display": {
+      "label": "Kistencode"
+    },
+    "qr": {
+      "download": "QR herunterladen"
+    }
+  },
+  "item": {
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "brand": "Marke",
+      "model": "Modell",
+      "author": "Autor",
+      "color": "Farbe",
+      "quantity": "Menge"
+    },
+    "capture": {
+      "title": "Objekt erfassen",
+      "queued": "Objekt in Warteschlange",
+      "ai_processing": "KI-Verarbeitung läuft...",
+      "take_photo": "Foto aufnehmen",
+      "hint_name": "Name (optional)",
+      "name_placeholder": "z.B. Tischlampe",
+      "saving": "Senden...",
+      "submit": "Senden"
+    },
+    "inbox": {
+      "title": "Eingang",
+      "pending_ai": "In Bearbeitung",
+      "ready": "Bereit",
+      "failed": "Fehlgeschlagen",
+      "empty": "Keine Objekte in Überprüfung",
+      "confirm_all": "Alle bestätigen"
+    },
+    "review": {
+      "ai_pending": "KI-Analyse läuft...",
+      "ai_error_generic": "Fehler bei der KI-Analyse",
+      "confirm": "Bestätigen",
+      "edit": "Bearbeiten",
+      "retry": "Wiederholen"
+    },
+    "detail": {
+      "edit": "Bearbeiten",
+      "ai_generated": "Von KI generiert —"
+    },
+    "edit": {
+      "title": "Objekt bearbeiten",
+      "confirm": "Objekt bestätigen"
+    },
+    "search": {
+      "title": "Objekte suchen",
+      "placeholder": "Nach Name, Marke suchen...",
+      "no_results": "Keine Ergebnisse"
+    },
+    "categories": {
+      "label": "Kategorien",
+      "add_existing": "Kategorie hinzufügen...",
+      "create_new": "Neue Kategorie..."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "total_containers": "Kisten gesamt",
+    "total_items": "Objekte gesamt",
+    "packed": "Geschlossen/Versiegelt",
+    "destinations": "Zielorte",
+    "status_breakdown": "Verteilung nach Status",
+    "upcoming_transfers": "Bevorstehende Transporte",
+    "recent_containers": "Aktuelle Kisten",
+    "greeting_morning": "Guten Morgen, {name}",
+    "greeting_evening": "Guten Abend, {name}",
+    "days_left": "Noch {n} Tage bis zum Umzug",
+    "next_transfer": "Nächste Fahrt {date}",
+    "packing": "Verpackung",
+    "boxes_sealed": "Kartons versiegelt"
+  },
+  "search": {
+    "title": "Globale Suche",
+    "placeholder": "Objekte, Kisten suchen...",
+    "no_results": "Keine Ergebnisse",
+    "items": "Objekte",
+    "containers": "Kisten",
+    "qr_scan": "QR-Scan",
+    "qr_start": "Scan starten",
+    "qr_stop": "Stoppen",
+    "start_typing": "Eingabe zum Suchen…",
+    "qr_hint": "Kamera auf QR-Code richten"
+  },
+  "transfer": {
+    "status": {
+      "planned": "Geplant",
+      "in_progress": "Laufend",
+      "completed": "Abgeschlossen",
+      "cancelled": "Abgebrochen"
+    },
+    "list": {
+      "title": "Transporte",
+      "create": "Neuer Transport",
+      "all_statuses": "Alle Status",
+      "empty": "Keine Transporte",
+      "plan": "Fahrt planen"
+    },
+    "detail": {
+      "start": "Transport starten",
+      "complete": "Transport abschließen",
+      "containers": "Kisten",
+      "add_container": "Kiste hinzufügen",
+      "container_code_placeholder": "z.B. A-001",
+      "no_containers": "Keine Kisten im Transport"
+    },
+    "create": {
+      "title": "Neuer Transport",
+      "name": "Name",
+      "destination": "Zielort",
+      "select_destination": "Zielort auswählen...",
+      "scheduled_date": "Geplantes Datum",
+      "vehicle_volume": "Fahrzeugvolumen (L)",
+      "notes": "Notizen",
+      "submit": "Transport erstellen"
+    },
+    "plan": {
+      "title": "Transporte planen",
+      "destination": "Zielort",
+      "vehicle_volume": "Fahrzeugvolumen (L)",
+      "volume_hint": "Nutzbares Fahrzeugvolumen in Litern eingeben",
+      "calculate": "Fahrten berechnen",
+      "result": "Ergebnis",
+      "trips": "Fahrten",
+      "trip": "Fahrt",
+      "create_transfer": "Diesen Transport erstellen",
+      "unassigned": "Kisten ohne Volumen",
+      "unassigned_hint": "Diese Kisten haben kein Volumen und müssen manuell zugewiesen werden"
+    },
+    "dest": {
+      "containers": "Kisten",
+      "total_volume": "Gesamtvolumen",
+      "transferred": "Transportiert",
+      "active_transfers": "Aktive Transporte",
+      "all_containers": "Alle Kisten"
+    }
+  },
+  "admin": {
+    "create": "Erstellen",
+    "add": "Hinzufügen",
+    "manage": "Verwalten",
+    "back": "Zurück",
+    "users": {
+      "title": "Benutzer",
+      "username": "Benutzername",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "sysadmin": "Systemadministrator",
+      "active": "Aktiv",
+      "deactivate": "Deaktivieren"
+    },
+    "houses": {
+      "title": "Häuser",
+      "name": "Name",
+      "prefix": "Präfix",
+      "description": "Beschreibung"
+    },
+    "house": {
+      "members": "Mitglieder",
+      "user_id": "Benutzer-ID",
+      "locations": "Standorte",
+      "location_name": "Standortname",
+      "destinations": "Zielorte",
+      "destination_name": "Name des Zielorts",
+      "select_user": "Benutzer wählen...",
+      "general": "Allgemein",
+      "name": "Name",
+      "description": "Beschreibung",
+      "code_prefix": "Code-Präfix"
+    },
+    "ai_config": {
+      "title": "KI-Konfiguration",
+      "active_provider": "Aktiver Anbieter",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "saved": "Konfiguration gespeichert",
+      "test": "Verbindung testen",
+      "testing": "Testen...",
+      "test_ok": "Verbindung OK",
+      "test_failed": "Verbindung fehlgeschlagen",
+      "latency": "Latenz: {ms}ms",
+      "ollama": {
+        "title": "Ollama",
+        "url": "Ollama-URL",
+        "model": "Modell",
+        "reachable": "Erreichbar",
+        "unreachable": "Nicht erreichbar"
+      },
+      "claude": {
+        "title": "Claude (Anthropic)",
+        "api_key": "API-Schlüssel",
+        "configured": "Konfiguriert",
+        "not_configured": "Nicht konfiguriert"
+      },
+      "mistral": {
+        "title": "Mistral",
+        "api_key": "API-Schlüssel",
+        "configured": "Konfiguriert",
+        "not_configured": "Nicht konfiguriert"
+      }
+    },
+    "save": "Speichern"
+  },
+  "print": {
+    "container": {
+      "title": "Kiste",
+      "items": "Objekte",
+      "no_items": "Keine Objekte",
+      "print": "Drucken"
+    }
+  },
+  "status": {
+    "open": "Offen",
+    "closed": "Geschlossen",
+    "sealed": "Versiegelt",
+    "in_transit": "Unterwegs",
+    "delivered": "Geliefert",
+    "pending": "KI ausstehend",
+    "ready": "Zu prüfen",
+    "confirmed": "Bestätigt",
+    "failed": "Fehlgeschlagen"
+  },
+  "capture": {
+    "ai_recognition": "KI-Erkennung",
+    "proposed_name": "Vorgeschlagener Name",
+    "step_photo": "Foto",
+    "step_analysis": "Analyse",
+    "step_categories": "Kategorien",
+    "redo": "Wiederholen",
+    "confirm": "Bestätigen"
+  }
+}

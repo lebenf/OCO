@@ -1,0 +1,343 @@
+{
+  "app": {
+    "tagline": "Gestione trasloco intelligente"
+  },
+  "nav": {
+    "section_main": "Trasloco",
+    "home": "Home",
+    "containers": "Scatole",
+    "transfers": "Trasferimenti",
+    "admin": "Admin",
+    "logout": "Esci",
+    "boxes": "Scatole",
+    "scan": "Scan",
+    "inbox": "Inbox",
+    "destinations": "Destinazioni",
+    "search": "Ricerca",
+    "users": "Utenti",
+    "houses": "Case",
+    "ai_config": "AI config",
+    "settings": "Impostazioni"
+  },
+  "ai": {
+    "hint_type": {
+      "label": "Tipo oggetto",
+      "auto": "Auto",
+      "single": "Singolo",
+      "set": "Set",
+      "collection": "Collezione",
+      "book": "Libro"
+    },
+    "item_status": {
+      "draft": "In elaborazione",
+      "draft_ai_done": "Pronto",
+      "draft_ai_failed": "Errore AI",
+      "confirmed": "Confermato"
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Gestione trasloco",
+      "username": "Nome utente",
+      "password": "Password",
+      "submit": "Accedi",
+      "loading": "Accesso in corso...",
+      "error": "Credenziali non valide"
+    }
+  },
+  "container": {
+    "status": {
+      "open": "Aperta",
+      "closed": "Chiusa",
+      "sealed": "Sigillata"
+    },
+    "card": {
+      "items": "{n} oggetti",
+      "children": "{n} annidate"
+    },
+    "list": {
+      "title": "Scatole",
+      "create": "Nuova scatola",
+      "search": "Cerca...",
+      "all_statuses": "Tutti gli stati",
+      "loading": "Caricamento...",
+      "empty": "Nessuna scatola trovata"
+    },
+    "detail": {
+      "edit": "Modifica",
+      "close": "Chiudi",
+      "close_blocked": "Ci sono oggetti in revisione. Usa 'Chiudi comunque' per confermarli automaticamente.",
+      "close_anyway": "Chiudi comunque",
+      "seal": "Sigilla",
+      "in": "In",
+      "photos": "Foto",
+      "add_photo": "Aggiungi foto",
+      "add_item": "Aggiungi oggetto",
+      "qr": "QR Code",
+      "children": "Scatole annidate",
+      "items": "Oggetti",
+      "in_review": "In revisione",
+      "no_items": "Nessun oggetto confermato",
+      "no_drafts": "Nessun oggetto in revisione"
+    },
+    "create": {
+      "title": "Nuova scatola",
+      "description": "Descrizione",
+      "width_cm": "Larghezza (cm)",
+      "depth_cm": "Profondità (cm)",
+      "height_cm": "Altezza (cm)",
+      "submit": "Crea scatola",
+      "saving": "Creazione...",
+      "success": "Scatola creata!",
+      "add_photo_prompt": "Aggiungi una foto alla scatola?",
+      "upload_photo": "Carica foto",
+      "view_detail": "Vai al dettaglio",
+      "back_to_list": "Torna alla lista"
+    },
+    "edit": {
+      "title": "Modifica scatola",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "cancel": "Annulla"
+    },
+    "nesting": {
+      "label": "Container padre (opzionale)",
+      "none": "Nessuno"
+    },
+    "code_display": {
+      "label": "Codice scatola"
+    },
+    "qr": {
+      "download": "Scarica QR"
+    }
+  },
+  "item": {
+    "fields": {
+      "name": "Nome",
+      "description": "Descrizione",
+      "brand": "Marca",
+      "model": "Modello",
+      "author": "Autore",
+      "color": "Colore",
+      "quantity": "Quantità"
+    },
+    "capture": {
+      "title": "Cattura oggetto",
+      "queued": "Oggetto in coda",
+      "ai_processing": "elaborazione AI in corso...",
+      "take_photo": "Scatta foto",
+      "hint_name": "Nome (opzionale)",
+      "name_placeholder": "es. Lampada da tavolo",
+      "saving": "Invio...",
+      "submit": "Invia"
+    },
+    "inbox": {
+      "title": "Posta in arrivo",
+      "pending_ai": "In elaborazione",
+      "ready": "Pronti",
+      "failed": "Falliti",
+      "empty": "Nessun oggetto in revisione",
+      "confirm_all": "Conferma tutti"
+    },
+    "review": {
+      "ai_pending": "Analisi AI in corso...",
+      "ai_error_generic": "Errore durante l'analisi AI",
+      "confirm": "Conferma",
+      "edit": "Modifica",
+      "retry": "Riprova"
+    },
+    "detail": {
+      "edit": "Modifica",
+      "ai_generated": "Generato da AI —"
+    },
+    "edit": {
+      "title": "Modifica oggetto",
+      "confirm": "Conferma oggetto"
+    },
+    "search": {
+      "title": "Cerca oggetti",
+      "placeholder": "Cerca per nome, marca...",
+      "no_results": "Nessun risultato"
+    },
+    "categories": {
+      "label": "Categorie",
+      "add_existing": "Aggiungi categoria...",
+      "create_new": "Nuova categoria..."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "total_containers": "Scatole totali",
+    "total_items": "Oggetti totali",
+    "packed": "Chiuse/Sigillate",
+    "destinations": "Destinazioni",
+    "status_breakdown": "Distribuzione per stato",
+    "upcoming_transfers": "Trasferimenti imminenti",
+    "recent_containers": "Scatole recenti",
+    "greeting_morning": "Buongiorno, {name}",
+    "greeting_evening": "Buonasera, {name}",
+    "days_left": "Restano {n} giorni al trasloco",
+    "next_transfer": "Prossimo viaggio {date}",
+    "packing": "Imballaggio",
+    "boxes_sealed": "scatoloni sigillati"
+  },
+  "search": {
+    "title": "Ricerca globale",
+    "placeholder": "Cerca oggetti, scatole...",
+    "no_results": "Nessun risultato",
+    "items": "Oggetti",
+    "containers": "Scatole",
+    "qr_scan": "Scansione QR",
+    "qr_start": "Avvia scansione",
+    "qr_stop": "Interrompi",
+    "start_typing": "Digita per cercare…",
+    "qr_hint": "Punta la fotocamera sul codice QR"
+  },
+  "transfer": {
+    "status": {
+      "planned": "Pianificato",
+      "in_progress": "In corso",
+      "completed": "Completato",
+      "cancelled": "Annullato"
+    },
+    "list": {
+      "title": "Trasferimenti",
+      "create": "Nuovo trasferimento",
+      "all_statuses": "Tutti gli stati",
+      "empty": "Nessun trasferimento",
+      "plan": "Pianifica viaggio"
+    },
+    "detail": {
+      "start": "Inizia trasferimento",
+      "complete": "Completa trasferimento",
+      "containers": "Scatole",
+      "add_container": "Aggiungi scatola",
+      "container_code_placeholder": "es. A-001",
+      "no_containers": "Nessuna scatola nel trasferimento"
+    },
+    "create": {
+      "title": "Nuovo trasferimento",
+      "name": "Nome",
+      "destination": "Destinazione",
+      "select_destination": "Seleziona destinazione...",
+      "scheduled_date": "Data prevista",
+      "vehicle_volume": "Volume mezzo (L)",
+      "notes": "Note",
+      "submit": "Crea trasferimento"
+    },
+    "plan": {
+      "title": "Pianifica trasferimenti",
+      "destination": "Destinazione",
+      "vehicle_volume": "Volume mezzo (L)",
+      "volume_hint": "Inserisci il volume utile del mezzo in litri",
+      "calculate": "Calcola viaggi",
+      "result": "Risultato",
+      "trips": "viaggi",
+      "trip": "Viaggio",
+      "create_transfer": "Crea questo trasferimento",
+      "unassigned": "Scatole senza volume",
+      "unassigned_hint": "Queste scatole non hanno volume e devono essere assegnate manualmente"
+    },
+    "dest": {
+      "containers": "Scatole",
+      "total_volume": "Volume totale",
+      "transferred": "Trasferite",
+      "active_transfers": "Trasferimenti attivi",
+      "all_containers": "Tutte le scatole"
+    }
+  },
+  "admin": {
+    "create": "Crea",
+    "add": "Aggiungi",
+    "manage": "Gestisci",
+    "back": "Indietro",
+    "users": {
+      "title": "Utenti",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "sysadmin": "System admin",
+      "active": "Attivo",
+      "deactivate": "Disattiva"
+    },
+    "houses": {
+      "title": "Case",
+      "name": "Nome",
+      "prefix": "Prefisso",
+      "description": "Descrizione"
+    },
+    "house": {
+      "members": "Membri",
+      "user_id": "User ID",
+      "locations": "Ubicazioni",
+      "location_name": "Nome ubicazione",
+      "destinations": "Destinazioni",
+      "destination_name": "Nome destinazione",
+      "select_user": "Seleziona utente...",
+      "general": "Generale",
+      "name": "Nome",
+      "description": "Descrizione",
+      "code_prefix": "Prefisso codice"
+    },
+    "ai_config": {
+      "title": "Configurazione AI",
+      "active_provider": "Provider attivo",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "saved": "Configurazione salvata",
+      "test": "Testa connessione",
+      "testing": "Test in corso...",
+      "test_ok": "Connessione OK",
+      "test_failed": "Connessione fallita",
+      "latency": "Latenza: {ms}ms",
+      "ollama": {
+        "title": "Ollama",
+        "url": "URL Ollama",
+        "model": "Modello",
+        "reachable": "Raggiungibile",
+        "unreachable": "Non raggiungibile"
+      },
+      "claude": {
+        "title": "Claude (Anthropic)",
+        "api_key": "API Key",
+        "configured": "Configurato",
+        "not_configured": "Non configurato"
+      },
+      "mistral": {
+        "title": "Mistral",
+        "api_key": "API Key",
+        "configured": "Configurato",
+        "not_configured": "Non configurato"
+      }
+    },
+    "save": "Salva"
+  },
+  "print": {
+    "container": {
+      "title": "Scatola",
+      "items": "Oggetti",
+      "no_items": "Nessun oggetto",
+      "print": "Stampa"
+    }
+  },
+  "status": {
+    "open": "Aperto",
+    "closed": "Chiuso",
+    "sealed": "Sigillato",
+    "in_transit": "In transito",
+    "delivered": "Consegnato",
+    "pending": "In attesa AI",
+    "ready": "Da rivedere",
+    "confirmed": "Confermato",
+    "failed": "Fallito"
+  },
+  "capture": {
+    "ai_recognition": "Riconoscimento AI",
+    "proposed_name": "Proposta nome",
+    "step_photo": "Foto",
+    "step_analysis": "Analisi",
+    "step_categories": "Categorie",
+    "redo": "Rifai",
+    "confirm": "Conferma"
+  }
+}

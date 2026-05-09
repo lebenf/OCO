@@ -1,0 +1,8 @@
+[run]
+source = app
+concurrency = greenlet,thread
+
+[report]
+omit =
+    app/core/init_db.py
+    tests/*

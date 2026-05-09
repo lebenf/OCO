@@ -1,0 +1,343 @@
+{
+  "app": {
+    "tagline": "Gestão inteligente de mudança"
+  },
+  "nav": {
+    "section_main": "Mudança",
+    "home": "Início",
+    "containers": "Caixas",
+    "transfers": "Transferências",
+    "admin": "Admin",
+    "logout": "Sair",
+    "boxes": "Caixas",
+    "scan": "Escanear",
+    "inbox": "Caixa de entrada",
+    "destinations": "Destinos",
+    "search": "Pesquisar",
+    "users": "Utilizadores",
+    "houses": "Casas",
+    "ai_config": "Config IA",
+    "settings": "Definições"
+  },
+  "ai": {
+    "hint_type": {
+      "label": "Tipo de objeto",
+      "auto": "Auto",
+      "single": "Individual",
+      "set": "Conjunto",
+      "collection": "Coleção",
+      "book": "Livro"
+    },
+    "item_status": {
+      "draft": "Em processamento",
+      "draft_ai_done": "Pronto",
+      "draft_ai_failed": "Erro de IA",
+      "confirmed": "Confirmado"
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Gestão de mudança",
+      "username": "Nome de utilizador",
+      "password": "Palavra-passe",
+      "submit": "Entrar",
+      "loading": "A iniciar sessão...",
+      "error": "Credenciais inválidas"
+    }
+  },
+  "container": {
+    "status": {
+      "open": "Aberta",
+      "closed": "Fechada",
+      "sealed": "Selada"
+    },
+    "card": {
+      "items": "{n} objetos",
+      "children": "{n} aninhadas"
+    },
+    "list": {
+      "title": "Caixas",
+      "create": "Nova caixa",
+      "search": "Pesquisar...",
+      "all_statuses": "Todos os estados",
+      "loading": "A carregar...",
+      "empty": "Nenhuma caixa encontrada"
+    },
+    "detail": {
+      "edit": "Editar",
+      "close": "Fechar",
+      "close_blocked": "Existem objetos em revisão. Use 'Fechar mesmo assim' para os confirmar automaticamente.",
+      "close_anyway": "Fechar mesmo assim",
+      "seal": "Selar",
+      "in": "Em",
+      "photos": "Fotos",
+      "add_photo": "Adicionar foto",
+      "add_item": "Adicionar objeto",
+      "qr": "Código QR",
+      "children": "Caixas aninhadas",
+      "items": "Objetos",
+      "in_review": "Em revisão",
+      "no_items": "Nenhum objeto confirmado",
+      "no_drafts": "Nenhum objeto em revisão"
+    },
+    "create": {
+      "title": "Nova caixa",
+      "description": "Descrição",
+      "width_cm": "Largura (cm)",
+      "depth_cm": "Profundidade (cm)",
+      "height_cm": "Altura (cm)",
+      "submit": "Criar caixa",
+      "saving": "A criar...",
+      "success": "Caixa criada!",
+      "add_photo_prompt": "Adicionar uma foto à caixa?",
+      "upload_photo": "Carregar foto",
+      "view_detail": "Ver detalhe",
+      "back_to_list": "Voltar à lista"
+    },
+    "edit": {
+      "title": "Editar caixa",
+      "save": "Guardar",
+      "saving": "A guardar...",
+      "cancel": "Cancelar"
+    },
+    "nesting": {
+      "label": "Contentor pai (opcional)",
+      "none": "Nenhum"
+    },
+    "code_display": {
+      "label": "Código da caixa"
+    },
+    "qr": {
+      "download": "Descarregar QR"
+    }
+  },
+  "item": {
+    "fields": {
+      "name": "Nome",
+      "description": "Descrição",
+      "brand": "Marca",
+      "model": "Modelo",
+      "author": "Autor",
+      "color": "Cor",
+      "quantity": "Quantidade"
+    },
+    "capture": {
+      "title": "Capturar objeto",
+      "queued": "Objeto em fila",
+      "ai_processing": "processamento de IA em curso...",
+      "take_photo": "Tirar foto",
+      "hint_name": "Nome (opcional)",
+      "name_placeholder": "ex. Candeeiro de mesa",
+      "saving": "A enviar...",
+      "submit": "Enviar"
+    },
+    "inbox": {
+      "title": "Caixa de entrada",
+      "pending_ai": "Em processamento",
+      "ready": "Prontos",
+      "failed": "Falhados",
+      "empty": "Nenhum objeto em revisão",
+      "confirm_all": "Confirmar todos"
+    },
+    "review": {
+      "ai_pending": "Análise de IA em curso...",
+      "ai_error_generic": "Erro durante a análise de IA",
+      "confirm": "Confirmar",
+      "edit": "Editar",
+      "retry": "Tentar novamente"
+    },
+    "detail": {
+      "edit": "Editar",
+      "ai_generated": "Gerado por IA —"
+    },
+    "edit": {
+      "title": "Editar objeto",
+      "confirm": "Confirmar objeto"
+    },
+    "search": {
+      "title": "Pesquisar objetos",
+      "placeholder": "Pesquisar por nome, marca...",
+      "no_results": "Sem resultados"
+    },
+    "categories": {
+      "label": "Categorias",
+      "add_existing": "Adicionar categoria...",
+      "create_new": "Nova categoria..."
+    }
+  },
+  "dashboard": {
+    "title": "Painel",
+    "total_containers": "Total de caixas",
+    "total_items": "Total de objetos",
+    "packed": "Fechadas/Seladas",
+    "destinations": "Destinos",
+    "status_breakdown": "Distribuição por estado",
+    "upcoming_transfers": "Próximas transferências",
+    "recent_containers": "Caixas recentes",
+    "greeting_morning": "Bom dia, {name}",
+    "greeting_evening": "Boa tarde, {name}",
+    "days_left": "Faltam {n} dias para a mudança",
+    "next_transfer": "Próxima viagem {date}",
+    "packing": "Embalagem",
+    "boxes_sealed": "caixas seladas"
+  },
+  "search": {
+    "title": "Pesquisa global",
+    "placeholder": "Pesquisar objetos, caixas...",
+    "no_results": "Sem resultados",
+    "items": "Objetos",
+    "containers": "Caixas",
+    "qr_scan": "Digitalizar QR",
+    "qr_start": "Iniciar digitalização",
+    "qr_stop": "Parar",
+    "start_typing": "Escreva para pesquisar…",
+    "qr_hint": "Aponte a câmara para o código QR"
+  },
+  "transfer": {
+    "status": {
+      "planned": "Planeado",
+      "in_progress": "Em curso",
+      "completed": "Concluído",
+      "cancelled": "Cancelado"
+    },
+    "list": {
+      "title": "Transferências",
+      "create": "Nova transferência",
+      "all_statuses": "Todos os estados",
+      "empty": "Sem transferências",
+      "plan": "Planear viagem"
+    },
+    "detail": {
+      "start": "Iniciar transferência",
+      "complete": "Concluir transferência",
+      "containers": "Caixas",
+      "add_container": "Adicionar caixa",
+      "container_code_placeholder": "ex. A-001",
+      "no_containers": "Sem caixas na transferência"
+    },
+    "create": {
+      "title": "Nova transferência",
+      "name": "Nome",
+      "destination": "Destino",
+      "select_destination": "Selecionar destino...",
+      "scheduled_date": "Data prevista",
+      "vehicle_volume": "Volume do veículo (L)",
+      "notes": "Notas",
+      "submit": "Criar transferência"
+    },
+    "plan": {
+      "title": "Planear transferências",
+      "destination": "Destino",
+      "vehicle_volume": "Volume do veículo (L)",
+      "volume_hint": "Introduza o volume útil do veículo em litros",
+      "calculate": "Calcular viagens",
+      "result": "Resultado",
+      "trips": "viagens",
+      "trip": "Viagem",
+      "create_transfer": "Criar esta transferência",
+      "unassigned": "Caixas sem volume",
+      "unassigned_hint": "Estas caixas não têm volume e devem ser atribuídas manualmente"
+    },
+    "dest": {
+      "containers": "Caixas",
+      "total_volume": "Volume total",
+      "transferred": "Transferidas",
+      "active_transfers": "Transferências ativas",
+      "all_containers": "Todas as caixas"
+    }
+  },
+  "admin": {
+    "create": "Criar",
+    "add": "Adicionar",
+    "manage": "Gerir",
+    "back": "Voltar",
+    "users": {
+      "title": "Utilizadores",
+      "username": "Nome de utilizador",
+      "email": "Email",
+      "password": "Palavra-passe",
+      "sysadmin": "Administrador do sistema",
+      "active": "Ativo",
+      "deactivate": "Desativar"
+    },
+    "houses": {
+      "title": "Casas",
+      "name": "Nome",
+      "prefix": "Prefixo",
+      "description": "Descrição"
+    },
+    "house": {
+      "members": "Membros",
+      "user_id": "ID do utilizador",
+      "locations": "Localizações",
+      "location_name": "Nome da localização",
+      "destinations": "Destinos",
+      "destination_name": "Nome do destino",
+      "select_user": "Selecionar utilizador...",
+      "general": "Geral",
+      "name": "Nome",
+      "description": "Descrição",
+      "code_prefix": "Prefixo do código"
+    },
+    "ai_config": {
+      "title": "Configuração de IA",
+      "active_provider": "Fornecedor ativo",
+      "save": "Guardar",
+      "saving": "A guardar...",
+      "saved": "Configuração guardada",
+      "test": "Testar ligação",
+      "testing": "A testar...",
+      "test_ok": "Ligação OK",
+      "test_failed": "Ligação falhada",
+      "latency": "Latência: {ms}ms",
+      "ollama": {
+        "title": "Ollama",
+        "url": "URL do Ollama",
+        "model": "Modelo",
+        "reachable": "Acessível",
+        "unreachable": "Inacessível"
+      },
+      "claude": {
+        "title": "Claude (Anthropic)",
+        "api_key": "Chave API",
+        "configured": "Configurado",
+        "not_configured": "Não configurado"
+      },
+      "mistral": {
+        "title": "Mistral",
+        "api_key": "Chave API",
+        "configured": "Configurado",
+        "not_configured": "Não configurado"
+      }
+    },
+    "save": "Salvar"
+  },
+  "print": {
+    "container": {
+      "title": "Caixa",
+      "items": "Objetos",
+      "no_items": "Sem objetos",
+      "print": "Imprimir"
+    }
+  },
+  "status": {
+    "open": "Aberto",
+    "closed": "Fechado",
+    "sealed": "Selado",
+    "in_transit": "Em trânsito",
+    "delivered": "Entregue",
+    "pending": "IA pendente",
+    "ready": "Para rever",
+    "confirmed": "Confirmado",
+    "failed": "Falhou"
+  },
+  "capture": {
+    "ai_recognition": "Reconhecimento IA",
+    "proposed_name": "Nome proposto",
+    "step_photo": "Foto",
+    "step_analysis": "Análise",
+    "step_categories": "Categorias",
+    "redo": "Refazer",
+    "confirm": "Confirmar"
+  }
+}
