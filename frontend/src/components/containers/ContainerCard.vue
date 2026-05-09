@@ -30,7 +30,7 @@ import Photo from '@/components/primitives/Photo.vue'
 import ContainerCode from '@/components/primitives/ContainerCode.vue'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 
-const props = defineProps<{ container: ContainerSummary }>()
+defineProps<{ container: ContainerSummary }>()
 defineEmits<{ click: [container: ContainerSummary] }>()
 
 </script>

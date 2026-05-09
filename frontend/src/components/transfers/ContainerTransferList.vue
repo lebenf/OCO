@@ -5,7 +5,7 @@
     <div v-if="containers.length === 0" class="empty">{{ $t('transfer.detail.no_containers') }}</div>
     <div v-for="c in containers" :key="c.id" class="container-row">
       <ContainerCode :value="c.code" size="sm" />
-      <span v-if="c.destination" class="dest-name">{{ c.destination.name }}</span>
+      <span v-if="c.destination_location" class="dest-name">{{ c.destination_location.name }}</span>
       <span v-if="c.volume_liters" class="volume num">{{ c.volume_liters.toFixed(1) }}L</span>
       <StatusBadge :kind="c.status" size="sm" />
       <button v-if="removable" class="remove-btn" @click="$emit('remove', c.id)">

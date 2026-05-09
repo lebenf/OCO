@@ -8,6 +8,7 @@ export interface HouseMini {
   id: string
   name: string
   role: 'admin' | 'member'
+  is_disposal?: boolean
 }
 
 export interface UserProfile {
