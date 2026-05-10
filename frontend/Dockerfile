@@ -15,4 +15,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
 EXPOSE 80
 
-CMD ["/bin/sh", "-c", "envsubst '$BACKEND_PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+CMD ["/bin/sh", "-c", "if [ -z \"$BACKEND_PORT\" ]; then echo 'ERROR: BACKEND_PORT is not set' >&2; exit 1; fi && envsubst '$BACKEND_PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
