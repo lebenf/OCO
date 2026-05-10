@@ -15,8 +15,18 @@ const router = createRouter({
       props: true,
     },
     {
+      path: '/account',
+      component: () => import('@/views/AccountView.vue'),
+    },
+    {
       path: '/admin/users',
       component: () => import('@/views/admin/UsersView.vue'),
+      meta: { adminOnly: true },
+    },
+    {
+      path: '/admin/users/:userId',
+      component: () => import('@/views/admin/UserDetailView.vue'),
+      props: true,
       meta: { adminOnly: true },
     },
     {

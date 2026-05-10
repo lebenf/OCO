@@ -17,7 +17,8 @@
     "users": "Benutzer",
     "houses": "Häuser",
     "ai_config": "KI-Config",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "account": "Konto"
   },
   "ai": {
     "hint_type": {
@@ -256,6 +257,25 @@
       "scan_btn": "QR scannen"
     }
   },
+  "account": {
+    "title": "Konto",
+    "profile": {
+      "title": "Profil",
+      "username": "Benutzername",
+      "email": "E-Mail"
+    },
+    "change_password": {
+      "title": "Passwort ändern",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirm": "Neues Passwort bestätigen",
+      "submit": "Passwort ändern",
+      "success": "Passwort erfolgreich geändert",
+      "mismatch": "Passwörter stimmen nicht überein",
+      "wrong_current": "Aktuelles Passwort falsch",
+      "error": "Fehler beim Ändern des Passworts"
+    }
+  },
   "admin": {
     "create": "Erstellen",
     "add": "Hinzufügen",
@@ -268,7 +288,16 @@
       "password": "Passwort",
       "sysadmin": "Systemadministrator",
       "active": "Aktiv",
-      "deactivate": "Deaktivieren"
+      "inactive": "Inaktiv",
+      "deactivate": "Deaktivieren",
+      "edit": "Bearbeiten",
+      "edit_title": "Benutzer bearbeiten",
+      "save": "Speichern",
+      "update_success": "Benutzer aktualisiert",
+      "new_password": "Neues Passwort",
+      "reset_password": "Passwort zurücksetzen",
+      "reset_password_title": "Passwort zurücksetzen",
+      "reset_password_success": "Passwort zurückgesetzt"
     },
     "houses": {
       "title": "Häuser",

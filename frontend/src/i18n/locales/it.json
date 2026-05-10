@@ -17,7 +17,8 @@
     "users": "Utenti",
     "houses": "Case",
     "ai_config": "AI config",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "account": "Account"
   },
   "ai": {
     "hint_type": {
@@ -256,6 +257,25 @@
       "scan_btn": "Leggi QR"
     }
   },
+  "account": {
+    "title": "Account",
+    "profile": {
+      "title": "Profilo",
+      "username": "Username",
+      "email": "Email"
+    },
+    "change_password": {
+      "title": "Cambia password",
+      "current": "Password attuale",
+      "new": "Nuova password",
+      "confirm": "Conferma nuova password",
+      "submit": "Cambia password",
+      "success": "Password cambiata con successo",
+      "mismatch": "Le password non corrispondono",
+      "wrong_current": "Password attuale errata",
+      "error": "Errore durante il cambio password"
+    }
+  },
   "admin": {
     "create": "Crea",
     "add": "Aggiungi",
@@ -268,7 +288,16 @@
       "password": "Password",
       "sysadmin": "System admin",
       "active": "Attivo",
-      "deactivate": "Disattiva"
+      "inactive": "Inattivo",
+      "deactivate": "Disattiva",
+      "edit": "Modifica",
+      "edit_title": "Modifica utente",
+      "save": "Salva modifiche",
+      "update_success": "Utente aggiornato",
+      "new_password": "Nuova password",
+      "reset_password": "Reimposta password",
+      "reset_password_title": "Reimposta password",
+      "reset_password_success": "Password reimpostata"
     },
     "houses": {
       "title": "Case",

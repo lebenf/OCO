@@ -43,9 +43,14 @@
                 </span>
               </td>
               <td>
-                <Btn v-if="u.is_active" kind="ghost" style="font-size:12px;padding:3px 8px" @click="handleDeactivate(u.id)">
-                  {{ $t('admin.users.deactivate') }}
-                </Btn>
+                <div style="display:flex;gap:4px">
+                  <Btn kind="ghost" style="font-size:12px;padding:3px 8px" :to="`/admin/users/${u.id}`">
+                    {{ $t('admin.users.edit') }}
+                  </Btn>
+                  <Btn v-if="u.is_active" kind="ghost" style="font-size:12px;padding:3px 8px" @click="handleDeactivate(u.id)">
+                    {{ $t('admin.users.deactivate') }}
+                  </Btn>
+                </div>
               </td>
             </tr>
           </tbody>

@@ -17,7 +17,8 @@
     "users": "Usuarios",
     "houses": "Casas",
     "ai_config": "Config IA",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "account": "Cuenta"
   },
   "ai": {
     "hint_type": {
@@ -256,6 +257,25 @@
       "scan_btn": "Leer QR"
     }
   },
+  "account": {
+    "title": "Cuenta",
+    "profile": {
+      "title": "Perfil",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico"
+    },
+    "change_password": {
+      "title": "Cambiar contraseña",
+      "current": "Contraseña actual",
+      "new": "Nueva contraseña",
+      "confirm": "Confirmar nueva contraseña",
+      "submit": "Cambiar contraseña",
+      "success": "Contraseña cambiada con éxito",
+      "mismatch": "Las contraseñas no coinciden",
+      "wrong_current": "Contraseña actual incorrecta",
+      "error": "Error al cambiar la contraseña"
+    }
+  },
   "admin": {
     "create": "Crear",
     "add": "Añadir",
@@ -268,7 +288,16 @@
       "password": "Contraseña",
       "sysadmin": "Administrador del sistema",
       "active": "Activo",
-      "deactivate": "Desactivar"
+      "inactive": "Inactivo",
+      "deactivate": "Desactivar",
+      "edit": "Editar",
+      "edit_title": "Editar usuario",
+      "save": "Guardar",
+      "update_success": "Usuario actualizado",
+      "new_password": "Nueva contraseña",
+      "reset_password": "Restablecer contraseña",
+      "reset_password_title": "Restablecer contraseña",
+      "reset_password_success": "Contraseña restablecida"
     },
     "houses": {
       "title": "Casas",

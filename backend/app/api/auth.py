@@ -16,7 +16,9 @@ from app.core.security import (
 )
 from app.models.user import User
 from app.schemas.auth import LoginRequest, UpdateProfileRequest, UserProfile
+from app.schemas.user import ChangePasswordRequest
 from app.services.auth_service import build_user_profile, get_user_by_username
+from app.core.security import hash_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -128,3 +130,18 @@ async def update_me(
     current_user.preferred_language = body.preferred_language
     await db.commit()
     return await build_user_profile(db, current_user.id)
+
+
+@router.post("/me/change-password", status_code=204)
+async def change_password(
+    body: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    if not verify_password(body.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"detail": "Current password is incorrect", "code": "WRONG_PASSWORD"},
+        )
+    current_user.password_hash = hash_password(body.new_password)
+    await db.commit()

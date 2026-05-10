@@ -17,7 +17,8 @@
     "users": "Users",
     "houses": "Houses",
     "ai_config": "AI config",
-    "settings": "Settings"
+    "settings": "Settings",
+    "account": "Account"
   },
   "ai": {
     "hint_type": {
@@ -256,6 +257,25 @@
       "scan_btn": "Scan QR"
     }
   },
+  "account": {
+    "title": "Account",
+    "profile": {
+      "title": "Profile",
+      "username": "Username",
+      "email": "Email"
+    },
+    "change_password": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "submit": "Change password",
+      "success": "Password changed successfully",
+      "mismatch": "Passwords do not match",
+      "wrong_current": "Current password is incorrect",
+      "error": "Error changing password"
+    }
+  },
   "admin": {
     "create": "Create",
     "add": "Add",
@@ -268,7 +288,16 @@
       "password": "Password",
       "sysadmin": "System admin",
       "active": "Active",
-      "deactivate": "Deactivate"
+      "inactive": "Inactive",
+      "deactivate": "Deactivate",
+      "edit": "Edit",
+      "edit_title": "Edit user",
+      "save": "Save changes",
+      "update_success": "User updated",
+      "new_password": "New password",
+      "reset_password": "Reset password",
+      "reset_password_title": "Reset password",
+      "reset_password_success": "Password reset"
     },
     "houses": {
       "title": "Houses",

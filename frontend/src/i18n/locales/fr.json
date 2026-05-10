@@ -17,7 +17,8 @@
     "users": "Utilisateurs",
     "houses": "Maisons",
     "ai_config": "Config IA",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "account": "Compte"
   },
   "ai": {
     "hint_type": {
@@ -256,6 +257,25 @@
       "scan_btn": "Scanner QR"
     }
   },
+  "account": {
+    "title": "Compte",
+    "profile": {
+      "title": "Profil",
+      "username": "Nom d'utilisateur",
+      "email": "Email"
+    },
+    "change_password": {
+      "title": "Changer le mot de passe",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le nouveau mot de passe",
+      "submit": "Changer le mot de passe",
+      "success": "Mot de passe changé avec succès",
+      "mismatch": "Les mots de passe ne correspondent pas",
+      "wrong_current": "Mot de passe actuel incorrect",
+      "error": "Erreur lors du changement de mot de passe"
+    }
+  },
   "admin": {
     "create": "Créer",
     "add": "Ajouter",
@@ -268,7 +288,16 @@
       "password": "Mot de passe",
       "sysadmin": "Administrateur système",
       "active": "Actif",
-      "deactivate": "Désactiver"
+      "inactive": "Inactif",
+      "deactivate": "Désactiver",
+      "edit": "Modifier",
+      "edit_title": "Modifier l'utilisateur",
+      "save": "Enregistrer",
+      "update_success": "Utilisateur mis à jour",
+      "new_password": "Nouveau mot de passe",
+      "reset_password": "Réinitialiser le mot de passe",
+      "reset_password_title": "Réinitialiser le mot de passe",
+      "reset_password_success": "Mot de passe réinitialisé"
     },
     "houses": {
       "title": "Maisons",

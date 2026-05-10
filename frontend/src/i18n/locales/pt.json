@@ -17,7 +17,8 @@
     "users": "Utilizadores",
     "houses": "Casas",
     "ai_config": "Config IA",
-    "settings": "Definições"
+    "settings": "Definições",
+    "account": "Conta"
   },
   "ai": {
     "hint_type": {
@@ -246,6 +247,25 @@
       "all_containers": "Todas as caixas"
     }
   },
+  "account": {
+    "title": "Conta",
+    "profile": {
+      "title": "Perfil",
+      "username": "Nome de utilizador",
+      "email": "Email"
+    },
+    "change_password": {
+      "title": "Alterar palavra-passe",
+      "current": "Palavra-passe atual",
+      "new": "Nova palavra-passe",
+      "confirm": "Confirmar nova palavra-passe",
+      "submit": "Alterar palavra-passe",
+      "success": "Palavra-passe alterada com sucesso",
+      "mismatch": "As palavras-passe não coincidem",
+      "wrong_current": "Palavra-passe atual incorreta",
+      "error": "Erro ao alterar a palavra-passe"
+    }
+  },
   "admin": {
     "create": "Criar",
     "add": "Adicionar",
@@ -258,7 +278,16 @@
       "password": "Palavra-passe",
       "sysadmin": "Administrador do sistema",
       "active": "Ativo",
-      "deactivate": "Desativar"
+      "inactive": "Inativo",
+      "deactivate": "Desativar",
+      "edit": "Editar",
+      "edit_title": "Editar utilizador",
+      "save": "Guardar",
+      "update_success": "Utilizador atualizado",
+      "new_password": "Nova palavra-passe",
+      "reset_password": "Redefinir palavra-passe",
+      "reset_password_title": "Redefinir palavra-passe",
+      "reset_password_success": "Palavra-passe redefinida"
     },
     "houses": {
       "title": "Casas",
