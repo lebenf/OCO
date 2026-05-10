@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useContainersStore, type ContainerSummary } from '@/stores/containers'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 
