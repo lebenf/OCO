@@ -31,6 +31,14 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="field-label">{{ $t('container.edit.current_location') }}</label>
+          <select v-model="form.current_location_id">
+            <option :value="null">{{ $t('container.edit.no_location') }}</option>
+            <option v-for="loc in locations" :key="loc.id" :value="loc.id">{{ loc.name }}</option>
+          </select>
+        </div>
+
         <p v-if="error" class="error-msg">{{ error }}</p>
 
         <div class="form-actions">
@@ -54,25 +62,40 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useContainersStore, type ContainerDetail } from '@/stores/containers'
+import { useHousesStore, type LocationOut } from '@/stores/houses'
 import Panel from '@/components/primitives/Panel.vue'
 import Btn from '@/components/primitives/Btn.vue'
 
 const props = defineProps<{ houseId: string; containerId: string }>()
 const router = useRouter()
 const store = useContainersStore()
+const housesStore = useHousesStore()
 
 const container = ref<ContainerDetail | null>(null)
-const form = ref({ description: '', width_cm: null as number | null, depth_cm: null as number | null, height_cm: null as number | null })
+const locations = ref<LocationOut[]>([])
+const form = ref({
+  description: '',
+  width_cm: null as number | null,
+  depth_cm: null as number | null,
+  height_cm: null as number | null,
+  current_location_id: null as string | null,
+})
 const saving = ref(false)
 const error = ref('')
 
 onMounted(async () => {
-  container.value = await store.fetchContainer(props.houseId, props.containerId)
+  const [c, locs] = await Promise.all([
+    store.fetchContainer(props.houseId, props.containerId),
+    housesStore.fetchLocations(props.houseId),
+  ])
+  container.value = c
+  locations.value = locs
   form.value = {
-    description: container.value.description ?? '',
-    width_cm: container.value.width_cm,
-    depth_cm: container.value.depth_cm,
-    height_cm: container.value.height_cm,
+    description: c.description ?? '',
+    width_cm: c.width_cm,
+    depth_cm: c.depth_cm,
+    height_cm: c.height_cm,
+    current_location_id: c.current_location?.id ?? null,
   }
 })
 
@@ -85,6 +108,7 @@ async function handleSave(): Promise<void> {
       width_cm: form.value.width_cm,
       depth_cm: form.value.depth_cm,
       height_cm: form.value.height_cm,
+      current_location_id: form.value.current_location_id,
     })
     router.push(`/houses/${props.houseId}/containers/${props.containerId}`)
   } catch (err: unknown) {

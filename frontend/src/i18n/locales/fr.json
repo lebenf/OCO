@@ -61,7 +61,9 @@
       "search": "Rechercher...",
       "all_statuses": "Tous les états",
       "loading": "Chargement...",
-      "empty": "Aucune boîte trouvée"
+      "empty": "Aucune boîte trouvée",
+      "group_by_location": "Grouper par emplacement",
+      "no_location": "Sans emplacement"
     },
     "detail": {
       "edit": "Modifier",
@@ -92,13 +94,17 @@
       "add_photo_prompt": "Ajouter une photo à la boîte ?",
       "upload_photo": "Télécharger une photo",
       "view_detail": "Voir le détail",
-      "back_to_list": "Retour à la liste"
+      "back_to_list": "Retour à la liste",
+      "current_location": "Emplacement actuel",
+      "no_location": "Aucun emplacement"
     },
     "edit": {
       "title": "Modifier la boîte",
       "save": "Enregistrer",
       "saving": "Enregistrement...",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "current_location": "Emplacement actuel",
+      "no_location": "Aucun emplacement"
     },
     "nesting": {
       "label": "Conteneur parent (optionnel)",
@@ -244,6 +250,10 @@
       "transferred": "Transférées",
       "active_transfers": "Transferts actifs",
       "all_containers": "Toutes les boîtes"
+    },
+    "qr_scan": {
+      "title": "Scanner le QR de la boîte",
+      "scan_btn": "Scanner QR"
     }
   },
   "admin": {

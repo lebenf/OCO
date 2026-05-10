@@ -54,7 +54,7 @@ class OllamaAdapter:
             "format": "json",
         }
 
-        async with httpx.AsyncClient(timeout=settings.AI_TIMEOUT_SECONDS + 5) as client:
+        async with httpx.AsyncClient(timeout=settings.OLLAMA_TIMEOUT_SECONDS + 5) as client:
             resp = await client.post(f"{self.url}/api/generate", json=payload)
             resp.raise_for_status()
 

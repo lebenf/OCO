@@ -1,13 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright 2026 Lorenzo Benfenati
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import AnyHttpUrl
 from typing import List
 
+# Look for .env in the project root (two levels up from this file: app/core/config.py → backend/ → OCO/)
+_PROJECT_ROOT = Path(__file__).parents[3]
+_ENV_FILE = _PROJECT_ROOT / ".env"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(_ENV_FILE),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
@@ -36,12 +41,18 @@ class Settings(BaseSettings):
     # Ollama
     OLLAMA_URL: str = "http://ollama:11434"
     OLLAMA_MODEL: str = "llava-llama3"
+    OLLAMA_TIMEOUT_SECONDS: int = 300
+    OLLAMA_CONCURRENCY: int = 1
 
     # Claude API
     CLAUDE_API_KEY: str = ""
 
     # Mistral API
     MISTRAL_API_KEY: str = ""
+
+    # Ports
+    BACKEND_PORT: int = 8000
+    FRONTEND_PORT: int = 3000
 
     # App
     APP_HOST: str = "http://localhost:3000"

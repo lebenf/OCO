@@ -389,7 +389,8 @@ async def list_items(
 ) -> Page[ItemSummary]:
     q = select(Item).where(Item.house_id == house_id)
     if status_filter:
-        q = q.where(Item.status == status_filter)
+        statuses = [s.strip() for s in status_filter.split(",") if s.strip()]
+        q = q.where(Item.status.in_(statuses) if len(statuses) > 1 else Item.status == statuses[0])
     if container_id:
         q = q.where(Item.container_id == container_id)
     if category_id:

@@ -77,14 +77,18 @@ async def create_container_endpoint(
     return await get_container_detail(container, db)
 
 
-@router.get("/{house_id}/containers/{code}", response_model=ContainerDetail)
-async def get_container_by_code(
-    code: str,
+@router.get("/{house_id}/containers/{code_or_id}", response_model=ContainerDetail)
+async def get_container_by_code_or_id(
+    code_or_id: str,
     house: House = Depends(get_house_member),
     db: AsyncSession = Depends(get_db),
 ) -> ContainerDetail:
+    from sqlalchemy import or_
     result = await db.execute(
-        select(Container).where(Container.house_id == house.id, Container.code == code)
+        select(Container).where(
+            Container.house_id == house.id,
+            or_(Container.id == code_or_id, Container.code == code_or_id),
+        )
     )
     container = result.scalar_one_or_none()
     if not container:

@@ -61,7 +61,9 @@
       "search": "Search...",
       "all_statuses": "All statuses",
       "loading": "Loading...",
-      "empty": "No containers found"
+      "empty": "No containers found",
+      "group_by_location": "Group by location",
+      "no_location": "No location"
     },
     "detail": {
       "edit": "Edit",
@@ -92,13 +94,17 @@
       "add_photo_prompt": "Add a photo to this container?",
       "upload_photo": "Upload photo",
       "view_detail": "Go to detail",
-      "back_to_list": "Back to list"
+      "back_to_list": "Back to list",
+      "current_location": "Current location",
+      "no_location": "No location"
     },
     "edit": {
       "title": "Edit container",
       "save": "Save",
       "saving": "Saving...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "current_location": "Current location",
+      "no_location": "No location"
     },
     "nesting": {
       "label": "Parent container (optional)",
@@ -244,6 +250,10 @@
       "transferred": "Transferred",
       "active_transfers": "Active transfers",
       "all_containers": "All containers"
+    },
+    "qr_scan": {
+      "title": "Scan box QR code",
+      "scan_btn": "Scan QR"
     }
   },
   "admin": {

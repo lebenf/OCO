@@ -61,7 +61,9 @@
       "search": "Buscar...",
       "all_statuses": "Todos los estados",
       "loading": "Cargando...",
-      "empty": "No se encontraron cajas"
+      "empty": "No se encontraron cajas",
+      "group_by_location": "Agrupar por ubicación",
+      "no_location": "Sin ubicación"
     },
     "detail": {
       "edit": "Editar",
@@ -92,13 +94,17 @@
       "add_photo_prompt": "¿Añadir una foto a la caja?",
       "upload_photo": "Subir foto",
       "view_detail": "Ver detalle",
-      "back_to_list": "Volver a la lista"
+      "back_to_list": "Volver a la lista",
+      "current_location": "Ubicación actual",
+      "no_location": "Sin ubicación"
     },
     "edit": {
       "title": "Editar caja",
       "save": "Guardar",
       "saving": "Guardando...",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "current_location": "Ubicación actual",
+      "no_location": "Sin ubicación"
     },
     "nesting": {
       "label": "Contenedor padre (opcional)",
@@ -244,6 +250,10 @@
       "transferred": "Trasladadas",
       "active_transfers": "Traslados activos",
       "all_containers": "Todas las cajas"
+    },
+    "qr_scan": {
+      "title": "Escanear QR de la caja",
+      "scan_btn": "Leer QR"
     }
   },
   "admin": {

@@ -267,7 +267,7 @@ async def start_transfer(transfer_id: str, house_id: str, db: AsyncSession) -> T
 
     for link in links:
         c = await db.get(Container, link.container_id)
-        if c and c.status in ("closed", "sealed"):
+        if c and c.status in ("open", "closed", "sealed"):
             c.status = "in_transit"
 
     await db.commit()
@@ -317,7 +317,7 @@ async def complete_transfer(transfer_id: str, house_id: str, db: AsyncSession) -
 
     for link in links:
         c = await db.get(Container, link.container_id)
-        if c and c.status == "in_transit":
+        if c:
             if dest_location and dest_house_id:
                 await _deliver_container_recursive(c, dest_location.id, dest_house_id, db)
             else:

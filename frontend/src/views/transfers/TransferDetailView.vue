@@ -64,21 +64,35 @@
               </svg>
             </button>
           </div>
-          <input
-            v-model="addContainerCode"
-            type="text"
+
+          <ContainerCombobox
+            :house-id="houseId"
             :placeholder="$t('transfer.detail.container_code_placeholder')"
-            autofocus
-            @keydown.enter="handleAddByCode"
+            @select="onComboboxSelect"
           />
+
+          <button class="qr-btn" @click="showQRScanner = true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+              <path d="M14 14h2v2h-2zM18 14v2M14 18h4v2h-4M20 18v2"/>
+            </svg>
+            {{ $t('transfer.qr_scan.scan_btn') }}
+          </button>
+
           <p v-if="addError" class="error-msg">{{ addError }}</p>
           <div class="modal-actions">
-            <Btn @click="handleAddByCode">{{ $t('admin.add') }}</Btn>
             <Btn kind="ghost" @click="showAddModal = false">{{ $t('container.edit.cancel') }}</Btn>
           </div>
         </div>
       </div>
     </Teleport>
+
+    <QRScannerOverlay
+      v-if="showQRScanner"
+      @close="showQRScanner = false"
+      @scanned="onQRScanned"
+    />
   </div>
 
   <div v-else class="loading-state">
@@ -89,9 +103,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useTransfersStore, type TransferDetail } from '@/stores/transfers'
-import { useContainersStore } from '@/stores/containers'
+import { useContainersStore, type ContainerSummary } from '@/stores/containers'
 import VolumeIndicator from '@/components/transfers/VolumeIndicator.vue'
 import ContainerTransferList from '@/components/transfers/ContainerTransferList.vue'
+import ContainerCombobox from '@/components/containers/ContainerCombobox.vue'
+import QRScannerOverlay from '@/components/containers/QRScannerOverlay.vue'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 import Panel from '@/components/primitives/Panel.vue'
 import Btn from '@/components/primitives/Btn.vue'
@@ -102,7 +118,7 @@ const containersStore = useContainersStore()
 
 const transfer = ref<TransferDetail | null>(null)
 const showAddModal = ref(false)
-const addContainerCode = ref('')
+const showQRScanner = ref(false)
 const addError = ref('')
 
 async function load(): Promise<void> {
@@ -121,17 +137,29 @@ async function handleRemoveContainer(containerId: string): Promise<void> {
   transfer.value = await store.removeContainer(props.houseId, props.transferId, containerId)
 }
 
-async function handleAddByCode(): Promise<void> {
+async function addContainerById(id: string): Promise<void> {
   addError.value = ''
-  const code = addContainerCode.value.trim().toUpperCase()
-  if (!code) return
+  try {
+    transfer.value = await store.addContainers(props.houseId, props.transferId, [id])
+    showAddModal.value = false
+  } catch {
+    addError.value = 'Errore durante l\'aggiunta'
+  }
+}
+
+async function onComboboxSelect(c: ContainerSummary): Promise<void> {
+  await addContainerById(c.id)
+}
+
+async function onQRScanned(code: string): Promise<void> {
+  showQRScanner.value = false
+  addError.value = ''
   try {
     const container = await containersStore.fetchContainer(props.houseId, code)
-    transfer.value = await store.addContainers(props.houseId, props.transferId, [container.id])
-    showAddModal.value = false
-    addContainerCode.value = ''
+    await addContainerById(container.id)
   } catch {
-    addError.value = 'Container not found'
+    addError.value = `Scatola "${code}" non trovata`
+    showAddModal.value = true
   }
 }
 
@@ -182,6 +210,17 @@ onMounted(load)
 }
 .modal-actions { display: flex; gap: var(--oco-s-2); }
 .error-msg { color: var(--oco-danger); font-size: 13px; margin: 0; }
+
+.qr-btn {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 10px 12px;
+  border: 1px dashed var(--oco-line-strong); border-radius: var(--oco-r-md);
+  background: var(--oco-surface-2); color: var(--oco-ink-3);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.12s;
+}
+.qr-btn:hover { border-color: var(--oco-primary); color: var(--oco-primary-ink); background: var(--oco-primary-soft); }
+@media (min-width: 1024px) { .qr-btn { display: none; } }
 
 .loading-state { display: flex; flex-direction: column; gap: var(--oco-s-3); }
 .skeleton { height: 72px; background: var(--oco-surface); border-radius: var(--oco-r-lg); animation: pulse 1.4s ease-in-out infinite; }

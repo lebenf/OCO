@@ -55,6 +55,14 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="field-label">{{ $t('container.create.current_location') }}</label>
+          <select v-model="form.current_location_id">
+            <option :value="null">{{ $t('container.create.no_location') }}</option>
+            <option v-for="loc in locations" :key="loc.id" :value="loc.id">{{ loc.name }}</option>
+          </select>
+        </div>
+
         <NestingSelector v-model="form.parent_id" :containers="availableContainers" />
 
         <p v-if="error" class="error-msg">{{ error }}</p>
@@ -70,6 +78,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useContainersStore, type ContainerDetail, type PhotoOut, type ContainerSummary } from '@/stores/containers'
+import { useHousesStore, type LocationOut } from '@/stores/houses'
 import ContainerCodeDisplay from '@/components/containers/ContainerCodeDisplay.vue'
 import NestingSelector from '@/components/containers/NestingSelector.vue'
 import Photo from '@/components/primitives/Photo.vue'
@@ -78,6 +87,7 @@ import Btn from '@/components/primitives/Btn.vue'
 
 const props = defineProps<{ houseId: string }>()
 const store = useContainersStore()
+const housesStore = useHousesStore()
 
 const form = ref({
   description: '',
@@ -85,7 +95,9 @@ const form = ref({
   depth_cm: null as number | null,
   height_cm: null as number | null,
   parent_id: null as string | null,
+  current_location_id: null as string | null,
 })
+const locations = ref<LocationOut[]>([])
 const saving = ref(false)
 const error = ref('')
 const created = ref<ContainerDetail | null>(null)
@@ -102,6 +114,7 @@ async function handleCreate(): Promise<void> {
       depth_cm: form.value.depth_cm,
       height_cm: form.value.height_cm,
       parent_id: form.value.parent_id,
+      current_location_id: form.value.current_location_id,
     })
   } catch (err: unknown) {
     const e = err as { response?: { data?: { detail?: string } } }
@@ -119,8 +132,12 @@ async function handlePhotoUpload(event: Event): Promise<void> {
 }
 
 onMounted(async () => {
-  await store.fetchContainers(props.houseId, { size: 100 })
+  const [, locs] = await Promise.all([
+    store.fetchContainers(props.houseId, { size: 100 }),
+    housesStore.fetchLocations(props.houseId),
+  ])
   availableContainers.value = store.containers
+  locations.value = locs
 })
 </script>
 

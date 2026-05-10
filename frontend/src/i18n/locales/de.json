@@ -61,7 +61,9 @@
       "search": "Suchen...",
       "all_statuses": "Alle Status",
       "loading": "Laden...",
-      "empty": "Keine Kisten gefunden"
+      "empty": "Keine Kisten gefunden",
+      "group_by_location": "Nach Standort gruppieren",
+      "no_location": "Kein Standort"
     },
     "detail": {
       "edit": "Bearbeiten",
@@ -92,13 +94,17 @@
       "add_photo_prompt": "Foto zur Kiste hinzufügen?",
       "upload_photo": "Foto hochladen",
       "view_detail": "Details ansehen",
-      "back_to_list": "Zurück zur Liste"
+      "back_to_list": "Zurück zur Liste",
+      "current_location": "Aktueller Standort",
+      "no_location": "Kein Standort"
     },
     "edit": {
       "title": "Kiste bearbeiten",
       "save": "Speichern",
       "saving": "Speichern...",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "current_location": "Aktueller Standort",
+      "no_location": "Kein Standort"
     },
     "nesting": {
       "label": "Übergeordneter Behälter (optional)",
@@ -244,6 +250,10 @@
       "transferred": "Transportiert",
       "active_transfers": "Aktive Transporte",
       "all_containers": "Alle Kisten"
+    },
+    "qr_scan": {
+      "title": "Karton-QR scannen",
+      "scan_btn": "QR scannen"
     }
   },
   "admin": {
