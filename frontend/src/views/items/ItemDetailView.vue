@@ -6,7 +6,17 @@
       <button class="back-btn" @click="$router.back()">← {{ $t('admin.back') }}</button>
       <div class="header-top">
         <h2 class="view-title">{{ item.name }}</h2>
-        <Btn kind="soft" :to="`/houses/${houseId}/items/${itemId}/edit`">{{ $t('item.detail.edit') }}</Btn>
+        <div class="header-actions">
+          <Btn
+            v-if="authStore.user?.is_system_admin"
+            kind="danger"
+            style="font-size:13px"
+            @click="handleDelete"
+          >
+            {{ $t('common.delete') }}
+          </Btn>
+          <Btn kind="soft" :to="`/houses/${houseId}/items/${itemId}/edit`">{{ $t('item.detail.edit') }}</Btn>
+        </div>
       </div>
       <div class="header-meta">
         <StatusBadge :kind="item.status" />
@@ -66,7 +76,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useItemsStore, type ItemDetail } from '@/stores/items'
+import { useAuthStore } from '@/stores/auth'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 import CategoryChip from '@/components/primitives/CategoryChip.vue'
 import Panel from '@/components/primitives/Panel.vue'
@@ -74,8 +87,17 @@ import Btn from '@/components/primitives/Btn.vue'
 import ItemPhotoGallery from '@/components/items/ItemPhotoGallery.vue'
 
 const props = defineProps<{ houseId: string; itemId: string }>()
+const router = useRouter()
+const { t } = useI18n()
 const store = useItemsStore()
+const authStore = useAuthStore()
 const item = ref<ItemDetail | null>(null)
+
+async function handleDelete(): Promise<void> {
+  if (!confirm(t('item.detail.delete_confirm'))) return
+  await store.deleteItem(props.houseId, props.itemId)
+  router.back()
+}
 
 onMounted(async () => {
   item.value = await store.fetchItem(props.houseId, props.itemId)
@@ -89,6 +111,7 @@ onMounted(async () => {
 .back-btn { background: none; border: none; font-size: 13px; color: var(--oco-ink-3); font-weight: 500; cursor: pointer; padding: 0; text-align: left; font-family: var(--oco-font-sans); }
 .back-btn:hover { color: var(--oco-ink); }
 .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--oco-s-3); }
+.header-actions { display: flex; gap: var(--oco-s-2); flex-wrap: wrap; }
 .view-title { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; flex: 1; }
 .header-meta { display: flex; align-items: center; gap: var(--oco-s-2); flex-wrap: wrap; }
 .meta-chip {

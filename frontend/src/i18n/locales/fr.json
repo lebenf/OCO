@@ -81,7 +81,8 @@
       "items": "Objets",
       "in_review": "En révision",
       "no_items": "Aucun objet confirmé",
-      "no_drafts": "Aucun objet en révision"
+      "no_drafts": "Aucun objet en révision",
+      "delete_confirm": "Supprimer cette boîte ? Cette action est irréversible."
     },
     "create": {
       "title": "Nouvelle boîte",
@@ -155,7 +156,8 @@
     },
     "detail": {
       "edit": "Modifier",
-      "ai_generated": "Généré par IA —"
+      "ai_generated": "Généré par IA —",
+      "delete_confirm": "Supprimer cet objet ? Cette action est irréversible."
     },
     "edit": {
       "title": "Modifier l'objet",
@@ -256,6 +258,11 @@
       "title": "Scanner le QR de la boîte",
       "scan_btn": "Scanner QR"
     }
+  },
+  "common": {
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
   },
   "account": {
     "title": "Compte",

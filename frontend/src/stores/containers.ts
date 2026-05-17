@@ -158,6 +158,10 @@ export const useContainersStore = defineStore('containers', () => {
     await api.delete(`/houses/${houseId}/containers/${containerId}/photos/${photoId}`)
   }
 
+  async function deleteContainer(houseId: string, containerId: string): Promise<void> {
+    await api.delete(`/houses/${houseId}/containers/${containerId}`)
+  }
+
   function qrUrl(houseId: string, containerId: string): string {
     return `/api/houses/${houseId}/containers/${containerId}/qr`
   }
@@ -176,6 +180,7 @@ export const useContainersStore = defineStore('containers', () => {
     sealContainer,
     uploadPhoto,
     deletePhoto,
+    deleteContainer,
     qrUrl,
   }
 })

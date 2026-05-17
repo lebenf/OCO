@@ -79,7 +79,8 @@
       "items": "Objetos",
       "in_review": "Em revisão",
       "no_items": "Nenhum objeto confirmado",
-      "no_drafts": "Nenhum objeto em revisão"
+      "no_drafts": "Nenhum objeto em revisão",
+      "delete_confirm": "Eliminar esta caixa? Esta ação não pode ser desfeita."
     },
     "create": {
       "title": "Nova caixa",
@@ -149,7 +150,8 @@
     },
     "detail": {
       "edit": "Editar",
-      "ai_generated": "Gerado por IA —"
+      "ai_generated": "Gerado por IA —",
+      "delete_confirm": "Eliminar este objeto? Esta ação não pode ser desfeita."
     },
     "edit": {
       "title": "Editar objeto",
@@ -246,6 +248,11 @@
       "active_transfers": "Transferências ativas",
       "all_containers": "Todas as caixas"
     }
+  },
+  "common": {
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar"
   },
   "account": {
     "title": "Conta",

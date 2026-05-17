@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.deps import get_current_user, get_house_member
+from app.core.deps import get_admin_user, get_current_user, get_house_member
 from app.models.house import House
 from app.models.user import User
 from app.schemas.item import (
@@ -129,6 +129,7 @@ async def update_item_endpoint(
 async def delete_item(
     item_id: str,
     house: House = Depends(get_house_member),
+    _: User = Depends(get_admin_user),
     db: AsyncSession = Depends(get_db),
 ) -> None:
     item = await get_item_or_404(item_id, house.id, db)

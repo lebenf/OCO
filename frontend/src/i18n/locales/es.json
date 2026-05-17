@@ -81,7 +81,8 @@
       "items": "Objetos",
       "in_review": "En revisión",
       "no_items": "No hay objetos confirmados",
-      "no_drafts": "No hay objetos en revisión"
+      "no_drafts": "No hay objetos en revisión",
+      "delete_confirm": "¿Eliminar esta caja? Esta acción no se puede deshacer."
     },
     "create": {
       "title": "Nueva caja",
@@ -155,7 +156,8 @@
     },
     "detail": {
       "edit": "Editar",
-      "ai_generated": "Generado por IA —"
+      "ai_generated": "Generado por IA —",
+      "delete_confirm": "¿Eliminar este objeto? Esta acción no se puede deshacer."
     },
     "edit": {
       "title": "Editar objeto",
@@ -256,6 +258,11 @@
       "title": "Escanear QR de la caja",
       "scan_btn": "Leer QR"
     }
+  },
+  "common": {
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar"
   },
   "account": {
     "title": "Cuenta",

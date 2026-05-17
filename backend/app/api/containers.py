@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.deps import get_current_user, get_house_member
+from app.core.deps import get_admin_user, get_current_user, get_house_member
 from app.models.container import Container
 from app.models.container_photo import ContainerPhoto
 from app.models.house import House
@@ -156,6 +156,18 @@ async def delete_photo_endpoint(
     if not photo or photo.container_id != container_id:
         raise HTTPException(status_code=404, detail={"detail": "Photo not found", "code": "NOT_FOUND"})
     await delete_photo(photo, db)
+
+
+@router.delete("/{house_id}/containers/{container_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_container_endpoint(
+    container_id: str,
+    house: House = Depends(get_house_member),
+    _: User = Depends(get_admin_user),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    container = await get_container_or_404(container_id, house.id, db)
+    await db.delete(container)
+    await db.commit()
 
 
 @router.get("/{house_id}/containers/{container_id}/qr")

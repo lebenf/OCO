@@ -81,7 +81,8 @@
       "items": "Objekte",
       "in_review": "In Überprüfung",
       "no_items": "Keine bestätigten Objekte",
-      "no_drafts": "Keine Objekte in Überprüfung"
+      "no_drafts": "Keine Objekte in Überprüfung",
+      "delete_confirm": "Diese Kiste löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "create": {
       "title": "Neue Kiste",
@@ -155,7 +156,8 @@
     },
     "detail": {
       "edit": "Bearbeiten",
-      "ai_generated": "Von KI generiert —"
+      "ai_generated": "Von KI generiert —",
+      "delete_confirm": "Dieses Objekt löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     },
     "edit": {
       "title": "Objekt bearbeiten",
@@ -256,6 +258,11 @@
       "title": "Karton-QR scannen",
       "scan_btn": "QR scannen"
     }
+  },
+  "common": {
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "account": {
     "title": "Konto",

@@ -10,6 +10,14 @@
           ← {{ $t('nav.boxes') }}
         </RouterLink>
         <div class="header-actions">
+          <Btn
+            v-if="authStore.user?.is_system_admin"
+            kind="danger"
+            style="font-size:13px"
+            @click="handleDelete"
+          >
+            {{ $t('common.delete') }}
+          </Btn>
           <Btn kind="ghost" :to="`/houses/${houseId}/containers/${container.id}/edit`" style="font-size:13px">
             {{ $t('container.detail.edit') }}
           </Btn>
@@ -157,9 +165,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useContainersStore, type ContainerDetail } from '@/stores/containers'
 import { useItemsStore, type ItemSummary } from '@/stores/items'
 import { type DraftItemSummary } from '@/stores/inbox'
+import { useAuthStore } from '@/stores/auth'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 import Btn from '@/components/primitives/Btn.vue'
 import Panel from '@/components/primitives/Panel.vue'
@@ -171,8 +181,10 @@ import ItemReviewCard from '@/views/items/ItemReviewCard.vue'
 
 const props = defineProps<{ houseId: string; containerId: string }>()
 const router = useRouter()
+const { t } = useI18n()
 const store = useContainersStore()
 const itemsStore = useItemsStore()
+const authStore = useAuthStore()
 
 const container = ref<ContainerDetail | null>(null)
 const confirmedItems = ref<ItemSummary[]>([])
@@ -218,6 +230,11 @@ async function handlePhotoUpload(event: Event): Promise<void> {
 async function handleDeletePhoto(photoId: string): Promise<void> {
   await store.deletePhoto(props.houseId, props.containerId, photoId)
   await load()
+}
+async function handleDelete(): Promise<void> {
+  if (!confirm(t('container.detail.delete_confirm'))) return
+  await store.deleteContainer(props.houseId, props.containerId)
+  router.push(`/houses/${props.houseId}/containers`)
 }
 function goToContainer(id: string): void {
   router.push(`/houses/${props.houseId}/containers/${id}`)

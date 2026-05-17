@@ -81,7 +81,8 @@
       "items": "Oggetti",
       "in_review": "In revisione",
       "no_items": "Nessun oggetto confermato",
-      "no_drafts": "Nessun oggetto in revisione"
+      "no_drafts": "Nessun oggetto in revisione",
+      "delete_confirm": "Eliminare questa scatola? L'operazione non può essere annullata."
     },
     "create": {
       "title": "Nuova scatola",
@@ -155,7 +156,8 @@
     },
     "detail": {
       "edit": "Modifica",
-      "ai_generated": "Generato da AI —"
+      "ai_generated": "Generato da AI —",
+      "delete_confirm": "Eliminare questo oggetto? L'operazione non può essere annullata."
     },
     "edit": {
       "title": "Modifica oggetto",
@@ -256,6 +258,11 @@
       "title": "Scansiona QR scatola",
       "scan_btn": "Leggi QR"
     }
+  },
+  "common": {
+    "delete": "Elimina",
+    "cancel": "Annulla",
+    "save": "Salva"
   },
   "account": {
     "title": "Account",
