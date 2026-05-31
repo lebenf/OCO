@@ -152,7 +152,8 @@
       "ai_error_generic": "Erreur lors de l'analyse IA",
       "confirm": "Confirmer",
       "edit": "Modifier",
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "delete": "Supprimer"
     },
     "detail": {
       "edit": "Modifier",

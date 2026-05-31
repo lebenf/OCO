@@ -152,7 +152,8 @@
       "ai_error_generic": "Fehler bei der KI-Analyse",
       "confirm": "Bestätigen",
       "edit": "Bearbeiten",
-      "retry": "Wiederholen"
+      "retry": "Wiederholen",
+      "delete": "Löschen"
     },
     "detail": {
       "edit": "Bearbeiten",

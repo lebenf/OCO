@@ -44,12 +44,21 @@
       >
         {{ $t('item.review.retry') }}
       </Btn>
+      <Btn
+        kind="danger"
+        style="font-size:12px;padding:5px 12px"
+        :disabled="deleting"
+        @click="handleDelete"
+      >
+        {{ $t('item.review.delete') }}
+      </Btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useItemsStore } from '@/stores/items'
 import { type DraftItemSummary } from '@/stores/inbox'
 import Photo from '@/components/primitives/Photo.vue'
@@ -57,11 +66,13 @@ import StatusBadge from '@/components/primitives/StatusBadge.vue'
 import Btn from '@/components/primitives/Btn.vue'
 
 const props = defineProps<{ item: DraftItemSummary; houseId: string }>()
-const emit = defineEmits<{ confirmed: []; retried: [] }>()
+const emit = defineEmits<{ confirmed: []; retried: []; deleted: [] }>()
 
+const { t } = useI18n()
 const itemsStore = useItemsStore()
 const confirming = ref(false)
 const retrying = ref(false)
+const deleting = ref(false)
 
 async function handleConfirm(): Promise<void> {
   if (!props.item.ai_result) return
@@ -84,6 +95,17 @@ async function handleRetry(): Promise<void> {
     emit('retried')
   } finally {
     retrying.value = false
+  }
+}
+
+async function handleDelete(): Promise<void> {
+  if (!confirm(t('item.detail.delete_confirm'))) return
+  deleting.value = true
+  try {
+    await itemsStore.deleteItem(props.houseId, props.item.id)
+    emit('deleted')
+  } finally {
+    deleting.value = false
   }
 }
 </script>

@@ -50,6 +50,7 @@
             :house-id="houseId"
             @confirmed="onItemAction"
             @retried="onItemAction"
+            @deleted="onItemAction"
           />
         </div>
       </Panel>
