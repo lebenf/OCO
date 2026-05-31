@@ -158,7 +158,8 @@
     "detail": {
       "edit": "Editar",
       "ai_generated": "Generado por IA —",
-      "delete_confirm": "¿Eliminar este objeto? Esta acción no se puede deshacer."
+      "delete_confirm": "¿Eliminar este objeto? Esta acción no se puede deshacer.",
+      "container": "Caja"
     },
     "edit": {
       "title": "Editar objeto",

@@ -81,6 +81,9 @@ async def _build_summary(item: Item, db: AsyncSession) -> ItemSummary:
         if cat:
             categories.append(CategoryMini(id=cat.id, name=cat.name, icon=cat.icon))
 
+    container = await db.get(Container, item.container_id)
+    container_code = container.code if container else ""
+
     return ItemSummary(
         id=item.id,
         name=item.name,
@@ -91,6 +94,7 @@ async def _build_summary(item: Item, db: AsyncSession) -> ItemSummary:
         quantity=item.quantity,
         ai_generated=item.ai_generated,
         container_id=item.container_id,
+        container_code=container_code,
         primary_photo_url=primary_photo,
         categories=categories,
     )

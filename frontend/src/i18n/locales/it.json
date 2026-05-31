@@ -158,7 +158,8 @@
     "detail": {
       "edit": "Modifica",
       "ai_generated": "Generato da AI —",
-      "delete_confirm": "Eliminare questo oggetto? L'operazione non può essere annullata."
+      "delete_confirm": "Eliminare questo oggetto? L'operazione non può essere annullata.",
+      "container": "Scatola"
     },
     "edit": {
       "title": "Modifica oggetto",

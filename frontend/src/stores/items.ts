@@ -27,6 +27,7 @@ export interface ItemSummary {
   quantity: number
   ai_generated: boolean
   container_id: string
+  container_code: string
   primary_photo_url: string | null
   categories: CategoryMini[]
 }

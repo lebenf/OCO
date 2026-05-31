@@ -24,6 +24,12 @@
         <span v-if="item.color" class="meta-chip">{{ item.color }}</span>
         <span v-if="item.quantity > 1" class="meta-chip mono">×{{ item.quantity }}</span>
       </div>
+      <RouterLink
+        :to="`/houses/${houseId}/containers/${item.container_id}`"
+        class="container-link"
+      >
+        📦 {{ $t('item.detail.container') }}: {{ item.container_code }}
+      </RouterLink>
     </div>
 
     <ItemPhotoGallery :photos="item.photos" />
@@ -118,6 +124,21 @@ onMounted(async () => {
   font-size: 12px; color: var(--oco-ink-3);
   background: var(--oco-surface-2); padding: 2px 8px; border-radius: var(--oco-r-xl);
 }
+
+.container-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oco-s-1);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--oco-primary);
+  text-decoration: none;
+  background: var(--oco-primary-soft);
+  padding: 4px 10px;
+  border-radius: var(--oco-r-xl);
+  width: fit-content;
+}
+.container-link:hover { filter: brightness(0.95); }
 
 .content-grid { display: flex; flex-direction: column; gap: var(--oco-s-4); }
 

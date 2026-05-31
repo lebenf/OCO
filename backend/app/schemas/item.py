@@ -92,6 +92,7 @@ class ItemSummary(BaseModel):
     quantity: int
     ai_generated: bool
     container_id: str
+    container_code: str = ""
     primary_photo_url: str | None = None
     categories: list[CategoryMini] = []
 

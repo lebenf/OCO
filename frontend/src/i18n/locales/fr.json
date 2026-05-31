@@ -158,7 +158,8 @@
     "detail": {
       "edit": "Modifier",
       "ai_generated": "Généré par IA —",
-      "delete_confirm": "Supprimer cet objet ? Cette action est irréversible."
+      "delete_confirm": "Supprimer cet objet ? Cette action est irréversible.",
+      "container": "Boîte"
     },
     "edit": {
       "title": "Modifier l'objet",
