@@ -127,7 +127,9 @@
       "model": "Modelo",
       "author": "Autor",
       "color": "Color",
-      "quantity": "Cantidad"
+      "quantity": "Cantidad",
+      "tags": "Etiquetas",
+      "categories": "Categorías"
     },
     "capture": {
       "title": "Capturar objeto",
