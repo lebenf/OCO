@@ -275,10 +275,10 @@ async def update_item(item: Item, data: ItemUpdate, house_id: str, db: AsyncSess
 
 
 async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysisJob:
-    if item.status not in ("draft_ai_failed",):
+    if item.status == "draft":
         raise HTTPException(
             status_code=400,
-            detail={"detail": "Only failed items can be retried", "code": "INVALID_STATUS"},
+            detail={"detail": "Item AI analysis is still pending", "code": "INVALID_STATUS"},
         )
     old_job = await db.get(AIAnalysisJob, item.ai_job_id) if item.ai_job_id else None
     old_photo_paths: list[str] = json.loads(old_job.input_photo_paths or "[]") if old_job else []
@@ -379,6 +379,17 @@ async def save_item_photo(
     await db.commit()
     await db.refresh(photo)
     return photo
+
+
+async def delete_item_photo(photo_id: str, item_id: str, db: AsyncSession) -> None:
+    photo = await db.get(ItemPhoto, photo_id)
+    if not photo or photo.item_id != item_id:
+        raise HTTPException(status_code=404, detail={"detail": "Photo not found", "code": "NOT_FOUND"})
+    full_path = Path(settings.STORAGE_PATH) / photo.file_path
+    if full_path.exists():
+        full_path.unlink()
+    await db.delete(photo)
+    await db.commit()
 
 
 async def list_items(

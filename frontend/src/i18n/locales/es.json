@@ -161,7 +161,13 @@
     },
     "edit": {
       "title": "Editar objeto",
-      "confirm": "Confirmar objeto"
+      "confirm": "Confirmar objeto",
+      "photos": "Fotos",
+      "add_photo": "Añadir foto",
+      "delete_photo": "Eliminar foto",
+      "retry_ai": "Re-analizar con IA",
+      "retry_ai_confirm": "Volver a enviar a la IA? Los campos se actualizarán.",
+      "retry_queued": "Análisis IA iniciado"
     },
     "search": {
       "title": "Buscar objetos",

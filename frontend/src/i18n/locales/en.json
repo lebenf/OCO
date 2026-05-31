@@ -161,7 +161,13 @@
     },
     "edit": {
       "title": "Edit item",
-      "confirm": "Confirm item"
+      "confirm": "Confirm item",
+      "photos": "Photos",
+      "add_photo": "Add photo",
+      "delete_photo": "Delete photo",
+      "retry_ai": "Re-analyze with AI",
+      "retry_ai_confirm": "Re-submit to AI? Fields will be updated with results.",
+      "retry_queued": "AI analysis started"
     },
     "search": {
       "title": "Search items",

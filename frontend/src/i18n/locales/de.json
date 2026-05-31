@@ -161,7 +161,13 @@
     },
     "edit": {
       "title": "Objekt bearbeiten",
-      "confirm": "Objekt bestätigen"
+      "confirm": "Objekt bestätigen",
+      "photos": "Fotos",
+      "add_photo": "Foto hinzufügen",
+      "delete_photo": "Foto löschen",
+      "retry_ai": "Mit KI neu analysieren",
+      "retry_ai_confirm": "Erneut an KI senden? Felder werden mit Ergebnissen aktualisiert.",
+      "retry_queued": "KI-Analyse gestartet"
     },
     "search": {
       "title": "Objekte suchen",

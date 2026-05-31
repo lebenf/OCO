@@ -147,6 +147,10 @@ export const useItemsStore = defineStore('items', () => {
     return res.data
   }
 
+  async function deletePhoto(houseId: string, itemId: string, photoId: string): Promise<void> {
+    await api.delete(`/houses/${houseId}/items/${itemId}/photos/${photoId}`)
+  }
+
   return {
     items,
     total,
@@ -160,5 +164,6 @@ export const useItemsStore = defineStore('items', () => {
     retryAI,
     confirmAll,
     uploadPhoto,
+    deletePhoto,
   }
 })

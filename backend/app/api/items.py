@@ -26,6 +26,7 @@ from app.services.item_service import (
     confirm_item,
     create_draft_item,
     create_draft_items_batch,
+    delete_item_photo,
     get_inbox,
     get_item_detail,
     get_item_or_404,
@@ -185,3 +186,17 @@ async def upload_item_photo(
     item = await get_item_or_404(item_id, house.id, db)
     photo = await save_item_photo(file, house.id, item.id, db)
     return ItemPhotoOut(id=photo.id, url=_photo_url(photo.file_path), is_primary=photo.is_primary, sort_order=photo.sort_order)
+
+
+@router.delete(
+    "/{house_id}/items/{item_id}/photos/{photo_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_item_photo_endpoint(
+    item_id: str,
+    photo_id: str,
+    house: House = Depends(get_house_member),
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    await get_item_or_404(item_id, house.id, db)
+    await delete_item_photo(photo_id, item_id, db)
