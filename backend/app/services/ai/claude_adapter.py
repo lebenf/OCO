@@ -19,8 +19,8 @@ class ClaudeAdapter:
     def __init__(self, api_key: str | None = None) -> None:
         self.api_key = api_key or settings.CLAUDE_API_KEY
 
-    async def analyze(self, photo_paths: list[str], hint_type: str, language: str) -> AIAnalysisResult:
-        prompt = build_prompt(hint_type, language)
+    async def analyze(self, photo_paths: list[str], hint_type: str, language: str, name_hint: str | None = None) -> AIAnalysisResult:
+        prompt = build_prompt(hint_type, language, name_hint)
         content: list[dict] = []
 
         for path in photo_paths:

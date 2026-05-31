@@ -38,8 +38,8 @@ class OllamaAdapter:
         self.url = url or settings.OLLAMA_URL
         self.model = model or settings.OLLAMA_MODEL
 
-    async def analyze(self, photo_paths: list[str], hint_type: str, language: str) -> AIAnalysisResult:
-        prompt = build_prompt(hint_type, language)
+    async def analyze(self, photo_paths: list[str], hint_type: str, language: str, name_hint: str | None = None) -> AIAnalysisResult:
+        prompt = build_prompt(hint_type, language, name_hint)
         images = []
         for path in photo_paths:
             full = Path(settings.STORAGE_PATH) / path

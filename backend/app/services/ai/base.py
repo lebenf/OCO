@@ -26,5 +26,6 @@ class AIVisionAdapter(Protocol):
         photo_paths: list[str],
         hint_type: str,
         language: str,
+        name_hint: str | None = None,
     ) -> AIAnalysisResult:
         ...

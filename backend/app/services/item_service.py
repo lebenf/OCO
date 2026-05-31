@@ -132,6 +132,7 @@ async def _enqueue_ai_job(
     language: str,
     photo_ids: list[str],
     db: AsyncSession,
+    name_hint: str | None = None,
 ) -> AIAnalysisJob:
     photo_paths = [_temp_photo_path(pid) for pid in photo_ids]
     job = AIAnalysisJob(
@@ -139,6 +140,7 @@ async def _enqueue_ai_job(
         requested_by=requested_by,
         status="pending",
         hint_type=hint_type,
+        name_hint=name_hint,
         language=language,
         item_id=item.id,
         input_photo_paths=json.dumps(photo_paths),
@@ -158,18 +160,19 @@ async def create_draft_item(
     created_by: str,
     db: AsyncSession,
 ) -> tuple[Item, AIAnalysisJob]:
+    user_name = data.name if data.name and data.name != "placeholder" else None
     item = Item(
         container_id=container.id,
         house_id=house_id,
         status="draft",
         item_type=data.item_type,
-        name=data.name or "placeholder",
+        name=user_name or "placeholder",
         created_by=created_by,
     )
     db.add(item)
     await db.flush()
 
-    job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db)
+    job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
     await db.commit()
     await db.refresh(item)
     return item, job
@@ -184,17 +187,18 @@ async def create_draft_items_batch(
 ) -> list[tuple[Item, AIAnalysisJob]]:
     results = []
     for data in items_data:
+        user_name = data.name if data.name and data.name != "placeholder" else None
         item = Item(
             container_id=container.id,
             house_id=house_id,
             status="draft",
             item_type=data.item_type,
-            name=data.name or "placeholder",
+            name=user_name or "placeholder",
             created_by=created_by,
         )
         db.add(item)
         await db.flush()
-        job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db)
+        job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
         results.append((item, job))
     await db.commit()
     for item, job in results:
@@ -284,6 +288,7 @@ async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysi
         requested_by=requested_by,
         status="pending",
         hint_type=old_job.hint_type if old_job else "auto",
+        name_hint=old_job.name_hint if old_job else None,
         language=old_job.language if old_job else "it",
         item_id=item.id,
         input_photo_paths=json.dumps(old_photo_paths),
@@ -310,7 +315,7 @@ async def confirm_all_container_items(container: Container, db: AsyncSession) ->
     confirmed = skipped_failed = skipped_pending = 0
     for item in items:
         if item.status == "draft_ai_done":
-            if item.ai_result_raw:
+            if item.ai_result_raw and item.name == "placeholder":
                 raw = json.loads(item.ai_result_raw)
                 item.name = raw.get("name", item.name)
             item.status = "confirmed"

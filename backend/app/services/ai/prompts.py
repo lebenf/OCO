@@ -41,9 +41,18 @@ HINT_INSTRUCTIONS: dict[str, dict[str, str]] = {
 }
 
 
-def build_prompt(hint_type: str, language: str) -> str:
+NAME_HINT_INSTRUCTIONS: dict[str, str] = {
+    "it": "L'utente ha suggerito che questo oggetto si chiama: \"{name}\". Usalo come riferimento nel campo name, migliorandolo se necessario (es. capitalizzazione corretta).",
+    "en": "The user suggested this object is called: \"{name}\". Use it as a reference for the name field, improving it if needed (e.g. proper capitalization).",
+}
+
+
+def build_prompt(hint_type: str, language: str, name_hint: str | None = None) -> str:
     lang = language if language in ("it", "en") else "it"
     hint = hint_type if hint_type in HINT_INSTRUCTIONS else "auto"
     system = SYSTEM_PROMPTS[lang]
     instruction = HINT_INSTRUCTIONS[hint][lang]
-    return f"{system}\n\n{instruction}"
+    parts = [system, instruction]
+    if name_hint:
+        parts.append(NAME_HINT_INSTRUCTIONS[lang].format(name=name_hint))
+    return "\n\n".join(parts)

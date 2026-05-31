@@ -24,6 +24,7 @@ class AIAnalysisJob(Base):
     # pending | processing | completed | failed
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending", index=True)
     hint_type: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    name_hint: Mapped[str | None] = mapped_column(String(255), nullable=True)
     language: Mapped[str] = mapped_column(String(10), nullable=False, default="it")
     input_photo_paths: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON
     raw_response: Mapped[str | None] = mapped_column(Text, nullable=True)

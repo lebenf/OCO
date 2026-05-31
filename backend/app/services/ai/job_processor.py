@@ -41,8 +41,8 @@ async def claim_next_pending_job(db: AsyncSession) -> AIAnalysisJob | None:
     return job
 
 
-def _apply_result_to_item(item: Item, result: AIAnalysisResult, provider: str) -> None:
-    item.name = result.name
+def _apply_result_to_item(item: Item, result: AIAnalysisResult, provider: str, name_hint: str | None = None) -> None:
+    item.name = name_hint if name_hint else result.name
     item.description = result.description or None
     item.item_type = result.item_type
     item.brand = result.brand
@@ -114,14 +114,14 @@ async def process_next_job(db: AsyncSession) -> bool:
             else settings.AI_TIMEOUT_SECONDS
         )
         result: AIAnalysisResult = await asyncio.wait_for(
-            adapter.analyze(photo_paths, job.hint_type or "auto", job.language),
+            adapter.analyze(photo_paths, job.hint_type or "auto", job.language, job.name_hint or None),
             timeout=timeout,
         )
 
         if job.item_id:
             item = await db.get(Item, job.item_id)
             if item:
-                _apply_result_to_item(item, result, settings.AI_PROVIDER)
+                _apply_result_to_item(item, result, settings.AI_PROVIDER, job.name_hint or None)
                 await _promote_temp_photos(item, photo_paths, db)
 
         job.status = "completed"
