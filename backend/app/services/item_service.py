@@ -421,6 +421,7 @@ async def list_items(
             Item.name.ilike(f"%{search}%")
             | Item.description.ilike(f"%{search}%")
             | Item.brand.ilike(f"%{search}%")
+            | Item.tags.ilike(f"%{search}%")
         )
 
     total = (await db.execute(select(func.count()).select_from(q.subquery()))).scalar_one()
