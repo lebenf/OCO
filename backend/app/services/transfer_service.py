@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.container import Container
 from app.models.house import House
+from app.models.item import Item
 from app.models.location import Location
 from app.models.transfer import Transfer
 from app.models.transfer_container import TransferContainer
@@ -285,6 +286,11 @@ async def _deliver_container_recursive(
     container.current_location_id = dest_location_id
     container.destination_location_id = None
     container.status = "delivered"
+
+    items = (await db.execute(select(Item).where(Item.container_id == container.id))).scalars().all()
+    for item in items:
+        item.house_id = dest_house_id
+
     children = (
         await db.execute(select(Container).where(Container.parent_id == container.id))
     ).scalars().all()
