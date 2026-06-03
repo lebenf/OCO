@@ -18,7 +18,10 @@
     "houses": "Häuser",
     "ai_config": "KI-Config",
     "settings": "Einstellungen",
-    "account": "Konto"
+    "account": "Konto",
+    "more": "Mehr",
+    "theme_light": "Helles Design",
+    "theme_dark": "Dunkles Design"
   },
   "ai": {
     "hint_type": {

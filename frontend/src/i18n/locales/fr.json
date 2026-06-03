@@ -18,7 +18,10 @@
     "houses": "Maisons",
     "ai_config": "Config IA",
     "settings": "Paramètres",
-    "account": "Compte"
+    "account": "Compte",
+    "more": "Plus",
+    "theme_light": "Thème clair",
+    "theme_dark": "Thème sombre"
   },
   "ai": {
     "hint_type": {

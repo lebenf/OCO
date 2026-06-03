@@ -18,7 +18,10 @@
     "houses": "Case",
     "ai_config": "AI config",
     "settings": "Impostazioni",
-    "account": "Account"
+    "account": "Account",
+    "more": "Altro",
+    "theme_light": "Tema chiaro",
+    "theme_dark": "Tema scuro"
   },
   "ai": {
     "hint_type": {
