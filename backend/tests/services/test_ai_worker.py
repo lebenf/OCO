@@ -2,15 +2,20 @@
 # Copyright 2026 Lorenzo Benfenati
 import asyncio
 import json
+from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.models.ai_analysis_job import AIAnalysisJob
 from app.models.item import Item
+from app.models.item_photo import ItemPhoto
 from app.services.ai.base import AIAnalysisResult
 from app.services.ai.job_processor import process_next_job, claim_next_pending_job
+from app.services.item_service import retry_ai
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -40,6 +45,14 @@ def _make_item(db_session, house_id, container_id, created_by):
     )
     db_session.add(item)
     return item
+
+
+def _write_temp_photo(storage_path: str, photo_id: str) -> str:
+    rel_path = str(Path("temp") / f"{photo_id}.jpg")
+    abs_path = Path(storage_path) / rel_path
+    abs_path.parent.mkdir(parents=True, exist_ok=True)
+    abs_path.write_bytes(b"\xff\xd8\xff\xe0fake-jpeg-bytes")
+    return rel_path
 
 
 _GOOD_RESULT = AIAnalysisResult(
@@ -136,6 +149,7 @@ async def test_timeout_marks_item_failed(db_session: AsyncSession, admin_user, h
     with (
         patch("app.services.ai.job_processor.get_ai_adapter", return_value=adapter),
         patch("app.core.config.settings.AI_TIMEOUT_SECONDS", 0),
+        patch("app.core.config.settings.OLLAMA_TIMEOUT_SECONDS", 0),
     ):
         processed = await process_next_job(db_session)
 
@@ -172,6 +186,94 @@ async def test_malformed_response_marks_item_failed(db_session: AsyncSession, ad
     assert job.status == "failed"
     assert "AI response" in job.error_message
     assert item.status == "draft_ai_failed"
+
+
+@pytest.mark.asyncio
+async def test_photo_promoted_on_timeout(db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch):
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    item = _make_item(db_session, house.id, container.id, admin_user.id)
+    await db_session.flush()
+    rel_temp = _write_temp_photo(str(tmp_path), "photo-1")
+    job = _make_job(db_session, house.id, admin_user.id, item_id=item.id, photo_paths=[rel_temp])
+    await db_session.commit()
+
+    async def slow_analyze(*args, **kwargs):
+        await asyncio.sleep(100)
+        return _GOOD_RESULT
+
+    adapter = AsyncMock()
+    adapter.analyze = slow_analyze
+
+    with (
+        patch("app.services.ai.job_processor.get_ai_adapter", return_value=adapter),
+        patch("app.core.config.settings.AI_TIMEOUT_SECONDS", 0),
+        patch("app.core.config.settings.OLLAMA_TIMEOUT_SECONDS", 0),
+    ):
+        await process_next_job(db_session)
+
+    await db_session.refresh(item)
+    assert item.status == "draft_ai_failed"
+    photos = (await db_session.execute(select(ItemPhoto).where(ItemPhoto.item_id == item.id))).scalars().all()
+    assert len(photos) == 1
+    assert (tmp_path / photos[0].file_path).exists()
+    assert not (tmp_path / rel_temp).exists()
+
+
+@pytest.mark.asyncio
+async def test_photo_promoted_on_ai_exception(db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch):
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    item = _make_item(db_session, house.id, container.id, admin_user.id)
+    await db_session.flush()
+    rel_temp = _write_temp_photo(str(tmp_path), "photo-2")
+    job = _make_job(db_session, house.id, admin_user.id, item_id=item.id, photo_paths=[rel_temp])
+    await db_session.commit()
+
+    adapter = AsyncMock()
+    adapter.analyze = AsyncMock(side_effect=ConnectionError("Ollama unreachable"))
+
+    with patch("app.services.ai.job_processor.get_ai_adapter", return_value=adapter):
+        await process_next_job(db_session)
+
+    await db_session.refresh(item)
+    assert item.status == "draft_ai_failed"
+    photos = (await db_session.execute(select(ItemPhoto).where(ItemPhoto.item_id == item.id))).scalars().all()
+    assert len(photos) == 1
+    assert (tmp_path / photos[0].file_path).exists()
+
+
+@pytest.mark.asyncio
+async def test_retry_after_failure_reuses_permanent_photo_no_duplicate(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    item = _make_item(db_session, house.id, container.id, admin_user.id)
+    await db_session.flush()
+    rel_temp = _write_temp_photo(str(tmp_path), "photo-3")
+    job = _make_job(db_session, house.id, admin_user.id, item_id=item.id, photo_paths=[rel_temp])
+    item.ai_job_id = job.id
+    await db_session.commit()
+
+    failing_adapter = AsyncMock()
+    failing_adapter.analyze = AsyncMock(side_effect=ConnectionError("Ollama unreachable"))
+    with patch("app.services.ai.job_processor.get_ai_adapter", return_value=failing_adapter):
+        await process_next_job(db_session)
+    await db_session.refresh(item)
+
+    await retry_ai(item, admin_user.id, db_session)
+    await db_session.refresh(item)
+
+    ok_adapter = AsyncMock()
+    ok_adapter.analyze = AsyncMock(return_value=_GOOD_RESULT)
+    with patch("app.services.ai.job_processor.get_ai_adapter", return_value=ok_adapter):
+        await process_next_job(db_session)
+    await db_session.refresh(item)
+
+    assert item.status == "draft_ai_done"
+    photos = (await db_session.execute(select(ItemPhoto).where(ItemPhoto.item_id == item.id))).scalars().all()
+    assert len(photos) == 1  # no duplicate created on retry
 
 
 @pytest.mark.asyncio

@@ -285,7 +285,16 @@ async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysi
             detail={"detail": "Item AI analysis is still pending", "code": "INVALID_STATUS"},
         )
     old_job = await db.get(AIAnalysisJob, item.ai_job_id) if item.ai_job_id else None
-    old_photo_paths: list[str] = json.loads(old_job.input_photo_paths or "[]") if old_job else []
+
+    # Photos are promoted to permanent storage after the first job attempt
+    # (even on failure), so reuse those paths rather than the old job's temp
+    # paths, which no longer exist on disk.
+    photos = (await db.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id).order_by(ItemPhoto.sort_order)
+    )).scalars().all()
+    photo_paths = [p.file_path for p in photos] if photos else (
+        json.loads(old_job.input_photo_paths or "[]") if old_job else []
+    )
 
     job = AIAnalysisJob(
         house_id=item.house_id,
@@ -295,7 +304,7 @@ async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysi
         name_hint=old_job.name_hint if old_job else None,
         language=old_job.language if old_job else "it",
         item_id=item.id,
-        input_photo_paths=json.dumps(old_photo_paths),
+        input_photo_paths=json.dumps(photo_paths),
         provider=settings.AI_PROVIDER,
         retry_count=(old_job.retry_count + 1) if old_job else 1,
     )

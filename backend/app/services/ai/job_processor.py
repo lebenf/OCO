@@ -77,6 +77,11 @@ async def _promote_temp_photos(item: Item, photo_paths: list[str], db: AsyncSess
     existing = (await db.execute(
         select(func.count()).select_from(ItemPhoto).where(ItemPhoto.item_id == item.id)
     )).scalar_one()
+    if existing:
+        # Already promoted (e.g. a previous failed attempt already moved these
+        # files); retry jobs re-submit the now-permanent paths, which must not
+        # be moved again.
+        return
 
     for i, rel_temp in enumerate(photo_paths):
         src = storage / rel_temp
@@ -105,8 +110,11 @@ async def process_next_job(db: AsyncSession) -> bool:
         return False
 
     start_ts = datetime.now(timezone.utc)
+    item = await db.get(Item, job.item_id) if job.item_id else None
+    photo_paths: list[str] = []
+
     try:
-        photo_paths: list[str] = json.loads(job.input_photo_paths or "[]")
+        photo_paths = json.loads(job.input_photo_paths or "[]")
         adapter = get_ai_adapter()
         timeout = (
             settings.OLLAMA_TIMEOUT_SECONDS
@@ -118,11 +126,8 @@ async def process_next_job(db: AsyncSession) -> bool:
             timeout=timeout,
         )
 
-        if job.item_id:
-            item = await db.get(Item, job.item_id)
-            if item:
-                _apply_result_to_item(item, result, settings.AI_PROVIDER, job.name_hint or None)
-                await _promote_temp_photos(item, photo_paths, db)
+        if item:
+            _apply_result_to_item(item, result, settings.AI_PROVIDER, job.name_hint or None)
 
         job.status = "completed"
         job.parsed_result = json.dumps({
@@ -142,22 +147,24 @@ async def process_next_job(db: AsyncSession) -> bool:
         job.status = "failed"
         job.error_message = "timeout"
         job.completed_at = datetime.now(timezone.utc)
-        if job.item_id:
-            item = await db.get(Item, job.item_id)
-            if item:
-                item.status = "draft_ai_failed"
-                item.ai_error = "timeout"
+        if item:
+            item.status = "draft_ai_failed"
+            item.ai_error = "timeout"
 
     except Exception as exc:
         logger.error("AI job %s failed: %s", job.id, exc)
         job.status = "failed"
         job.error_message = str(exc)[:500]
         job.completed_at = datetime.now(timezone.utc)
-        if job.item_id:
-            item = await db.get(Item, job.item_id)
-            if item:
-                item.status = "draft_ai_failed"
-                item.ai_error = str(exc)[:500]
+        if item:
+            item.status = "draft_ai_failed"
+            item.ai_error = str(exc)[:500]
+
+    finally:
+        # Photos must survive regardless of AI outcome — never leave them
+        # stranded in temp/ just because analysis failed or timed out.
+        if item and photo_paths:
+            await _promote_temp_photos(item, photo_paths, db)
 
     await db.commit()
     return True
