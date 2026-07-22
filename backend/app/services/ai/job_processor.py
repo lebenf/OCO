@@ -36,7 +36,7 @@ async def claim_next_pending_job(db: AsyncSession) -> AIAnalysisJob | None:
     job = result.scalar_one_or_none()
     if job:
         job.status = "processing"
-        job.started_at = datetime.now(timezone.utc)
+        job.started_at = datetime.now(timezone.utc).replace(tzinfo=None)
         await db.flush()
     return job
 
@@ -138,7 +138,7 @@ async def process_next_job(db: AsyncSession) -> bool:
             "model": result.model,
             "confidence": result.confidence,
         })
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         elapsed = (datetime.now(timezone.utc) - start_ts).total_seconds()
         job.duration_ms = int(elapsed * 1000)
 
@@ -146,7 +146,7 @@ async def process_next_job(db: AsyncSession) -> bool:
         logger.warning("AI job %s timed out", job.id)
         job.status = "failed"
         job.error_message = "timeout"
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         if item:
             item.status = "draft_ai_failed"
             item.ai_error = "timeout"
@@ -155,7 +155,7 @@ async def process_next_job(db: AsyncSession) -> bool:
         logger.error("AI job %s failed: %s", job.id, exc)
         job.status = "failed"
         job.error_message = str(exc)[:500]
-        job.completed_at = datetime.now(timezone.utc)
+        job.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
         if item:
             item.status = "draft_ai_failed"
             item.ai_error = str(exc)[:500]
