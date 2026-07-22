@@ -144,6 +144,13 @@
         <!-- QR -->
         <Panel :title="$t('container.detail.qr')">
           <QRCodeDisplay :house-id="houseId" :container-id="container.id" :code="container.code" />
+          <RouterLink
+            :to="`/print/${houseId}/container/${container.id}/labels`"
+            target="_blank"
+            class="print-labels-link"
+          >
+            {{ $t('container.detail.print_labels') }}
+          </RouterLink>
         </Panel>
 
         <!-- Dimensions -->
@@ -348,6 +355,12 @@ onMounted(load)
 .photo-add:hover { background: var(--oco-surface-3); }
 
 .dim-text { font-size: 14px; color: var(--oco-ink-2); margin: 0; }
+
+.print-labels-link {
+  display: block; text-align: center; margin-top: var(--oco-s-3);
+  font-size: 13px; color: var(--oco-primary); text-decoration: none;
+}
+.print-labels-link:hover { text-decoration: underline; }
 
 .loading-state { display: flex; flex-direction: column; gap: var(--oco-s-4); }
 .skeleton { background: var(--oco-surface); border-radius: var(--oco-r-lg); animation: pulse 1.4s ease-in-out infinite; }

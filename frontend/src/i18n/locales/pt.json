@@ -78,6 +78,7 @@
       "add_photo": "Adicionar foto",
       "add_item": "Adicionar objeto",
       "qr": "Código QR",
+      "print_labels": "Imprimir etiquetas",
       "children": "Caixas aninhadas",
       "items": "Objetos",
       "in_review": "Em revisão",
@@ -367,6 +368,11 @@
       "items": "Objetos",
       "no_items": "Sem objetos",
       "print": "Imprimir"
+    },
+    "labels": {
+      "count": "Número de etiquetas",
+      "columns": "Colunas",
+      "open_pdf": "Abrir PDF"
     }
   },
   "status": {

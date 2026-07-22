@@ -80,6 +80,7 @@
       "add_photo": "Foto hinzufügen",
       "add_item": "Objekt hinzufügen",
       "qr": "QR-Code",
+      "print_labels": "Etiketten drucken",
       "children": "Verschachtelte Kisten",
       "items": "Objekte",
       "in_review": "In Überprüfung",
@@ -377,6 +378,11 @@
       "items": "Objekte",
       "no_items": "Keine Objekte",
       "print": "Drucken"
+    },
+    "labels": {
+      "count": "Anzahl Etiketten",
+      "columns": "Spalten",
+      "open_pdf": "PDF öffnen"
     }
   },
   "status": {

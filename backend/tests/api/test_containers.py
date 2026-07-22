@@ -233,6 +233,44 @@ async def test_qr_code_returns_png(container_client):
     assert resp.content[:4] == b"\x89PNG"  # PNG magic bytes
 
 
+# ── Label sheet PDF ───────────────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_labels_pdf_default_layout(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.get(f"/api/houses/{house.id}/containers/{c['id']}/labels/pdf")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"] == "application/pdf"
+    assert resp.content[:5] == b"%PDF-"
+
+
+@pytest.mark.asyncio
+async def test_labels_pdf_custom_layout(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.get(
+        f"/api/houses/{house.id}/containers/{c['id']}/labels/pdf",
+        params={"count": 12, "columns": 3},
+    )
+    assert resp.status_code == 200
+    assert resp.content[:5] == b"%PDF-"
+
+
+@pytest.mark.asyncio
+async def test_labels_pdf_rejects_out_of_range(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.get(
+        f"/api/houses/{house.id}/containers/{c['id']}/labels/pdf",
+        params={"count": 0},
+    )
+    assert resp.status_code == 422
+
+
 # ── Access control ────────────────────────────────────────────────────────────
 
 @pytest.mark.asyncio

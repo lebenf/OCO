@@ -80,6 +80,7 @@
       "add_photo": "Ajouter une photo",
       "add_item": "Ajouter un objet",
       "qr": "QR Code",
+      "print_labels": "Imprimer les étiquettes",
       "children": "Boîtes imbriquées",
       "items": "Objets",
       "in_review": "En révision",
@@ -377,6 +378,11 @@
       "items": "Objets",
       "no_items": "Aucun objet",
       "print": "Imprimer"
+    },
+    "labels": {
+      "count": "Nombre d'étiquettes",
+      "columns": "Colonnes",
+      "open_pdf": "Ouvrir le PDF"
     }
   },
   "status": {

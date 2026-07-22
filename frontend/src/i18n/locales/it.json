@@ -80,6 +80,7 @@
       "add_photo": "Aggiungi foto",
       "add_item": "Aggiungi oggetto",
       "qr": "QR Code",
+      "print_labels": "Stampa etichette",
       "children": "Scatole annidate",
       "items": "Oggetti",
       "in_review": "In revisione",
@@ -377,6 +378,11 @@
       "items": "Oggetti",
       "no_items": "Nessun oggetto",
       "print": "Stampa"
+    },
+    "labels": {
+      "count": "Numero di etichette",
+      "columns": "Colonne",
+      "open_pdf": "Apri PDF"
     }
   },
   "status": {

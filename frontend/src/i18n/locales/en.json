@@ -80,6 +80,7 @@
       "add_photo": "Add photo",
       "add_item": "Add item",
       "qr": "QR Code",
+      "print_labels": "Print labels",
       "children": "Nested containers",
       "items": "Items",
       "in_review": "In review",
@@ -377,6 +378,11 @@
       "items": "Items",
       "no_items": "No items",
       "print": "Print"
+    },
+    "labels": {
+      "count": "Number of labels",
+      "columns": "Columns",
+      "open_pdf": "Open PDF"
     }
   },
   "status": {

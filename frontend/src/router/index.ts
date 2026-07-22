@@ -125,6 +125,12 @@ const router = createRouter({
       props: true,
       meta: { public: false, noShell: true },
     },
+    {
+      path: '/print/:houseId/container/:containerId/labels',
+      component: () => import('@/views/print/LabelsPrintView.vue'),
+      props: true,
+      meta: { public: false, noShell: true },
+    },
   ],
 })
 

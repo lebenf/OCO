@@ -28,6 +28,7 @@ from app.services.container_service import (
     close_container,
     create_container,
     delete_photo,
+    generate_label_sheet_pdf,
     get_container_detail,
     get_container_or_404,
     list_containers,
@@ -189,3 +190,21 @@ async def get_qr_code(
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     return Response(content=buf.getvalue(), media_type="image/png")
+
+
+@router.get("/{house_id}/containers/{container_id}/labels/pdf")
+async def get_labels_pdf(
+    container_id: str,
+    house: House = Depends(get_house_member),
+    count: int = Query(6, ge=1, le=60),
+    columns: int = Query(2, ge=1, le=6),
+    db: AsyncSession = Depends(get_db),
+) -> Response:
+    container = await get_container_or_404(container_id, house.id, db)
+    url = f"{settings.APP_HOST}/containers/{container.code}"
+    pdf_bytes = generate_label_sheet_pdf(container.code, url, count=count, columns=columns)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="labels-{container.code}.pdf"'},
+    )

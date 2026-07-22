@@ -6,8 +6,13 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+import qrcode
 from fastapi import HTTPException, UploadFile
 from PIL import Image
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,6 +43,50 @@ MAX_NESTING_LEVEL = 2
 async def generate_container_code(house: House) -> str:
     house.container_sequence += 1
     return f"{house.code_prefix}-{house.container_sequence:03d}"
+
+
+def generate_label_sheet_pdf(code: str, url: str, count: int, columns: int) -> bytes:
+    qr = qrcode.QRCode(border=1)
+    qr.add_data(url)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+    qr_buf = io.BytesIO()
+    qr_img.save(qr_buf, format="PNG")
+    qr_buf.seek(0)
+    qr_reader = ImageReader(qr_buf)
+
+    page_width, page_height = A4
+    margin = 10 * mm
+    padding = 4 * mm
+    rows = math.ceil(count / columns)
+
+    cell_width = (page_width - 2 * margin) / columns
+    cell_height = (page_height - 2 * margin) / rows
+    qr_size = max(min(cell_width, cell_height - 8 * mm) - 2 * padding, 10 * mm)
+
+    buf = io.BytesIO()
+    pdf = canvas.Canvas(buf, pagesize=A4)
+
+    for i in range(count):
+        row, col = divmod(i, columns)
+        x0 = margin + col * cell_width
+        y0 = page_height - margin - (row + 1) * cell_height
+
+        pdf.setDash(2, 2)
+        pdf.setStrokeColorRGB(0.7, 0.7, 0.7)
+        pdf.rect(x0, y0, cell_width, cell_height)
+        pdf.setDash()
+
+        qr_x = x0 + (cell_width - qr_size) / 2
+        qr_y = y0 + cell_height - padding - qr_size
+        pdf.drawImage(qr_reader, qr_x, qr_y, width=qr_size, height=qr_size)
+
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.setFillColorRGB(0, 0, 0)
+        pdf.drawCentredString(x0 + cell_width / 2, y0 + padding + 2, code)
+
+    pdf.save()
+    return buf.getvalue()
 
 
 async def get_container_or_404(container_id: str, house_id: str, db: AsyncSession) -> Container:
