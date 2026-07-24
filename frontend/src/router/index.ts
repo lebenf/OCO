@@ -2,6 +2,7 @@
 // Copyright 2026 Lorenzo Benfenati
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useHousesStore } from '@/stores/houses'
 import LoginView from '@/views/LoginView.vue'
 
 const router = createRouter({
@@ -148,6 +149,11 @@ router.beforeEach(async (to) => {
 
   if (to.meta.adminOnly && !auth.user?.is_system_admin) {
     return { path: '/' }
+  }
+
+  const houseId = to.params.houseId
+  if (typeof houseId === 'string') {
+    useHousesStore().selectHouse(houseId)
   }
 
   return true
