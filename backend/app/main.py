@@ -23,6 +23,7 @@ from app.api.admin.houses import router as admin_houses_router
 from app.api.admin.config import router as admin_config_router
 from app.api.houses import router as houses_router
 from app.api.containers import router as containers_router
+from app.api.containers import lookup_router as container_lookup_router
 from app.api.ai import router as ai_router
 from app.api.items import router as items_router
 from app.api.categories import router as categories_router
@@ -108,6 +109,7 @@ app.include_router(admin_houses_router, prefix="/api/admin")
 app.include_router(admin_config_router, prefix="/api/admin")
 app.include_router(houses_router, prefix="/api")
 app.include_router(containers_router, prefix="/api")
+app.include_router(container_lookup_router, prefix="/api")
 app.include_router(ai_router, prefix="/api")
 app.include_router(items_router, prefix="/api")
 app.include_router(categories_router, prefix="/api")

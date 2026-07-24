@@ -121,6 +121,11 @@
     },
     "qr": {
       "download": "Scarica QR"
+    },
+    "redirect": {
+      "loading": "Ricerca scatola in corso...",
+      "not_found": "Scatola non trovata. Il QR code potrebbe non essere più valido.",
+      "error": "Errore durante la ricerca della scatola."
     }
   },
   "item": {

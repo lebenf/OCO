@@ -121,6 +121,11 @@
     },
     "qr": {
       "download": "Download QR"
+    },
+    "redirect": {
+      "loading": "Looking up container...",
+      "not_found": "Container not found. This QR code may no longer be valid.",
+      "error": "Error while looking up the container."
     }
   },
   "item": {

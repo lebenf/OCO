@@ -14,6 +14,7 @@ from app.core.deps import get_admin_user, get_current_user, get_house_member
 from app.models.container import Container
 from app.models.container_photo import ContainerPhoto
 from app.models.house import House
+from app.models.house_membership import HouseMembership
 from app.models.user import User
 from app.schemas.container import (
     ContainerClose,
@@ -39,6 +40,31 @@ from app.services.container_service import (
 )
 
 router = APIRouter(prefix="/houses", tags=["containers"])
+lookup_router = APIRouter(tags=["containers"])
+
+
+@lookup_router.get("/containers/by-code/{code}")
+async def resolve_container_by_code(
+    code: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    result = await db.execute(select(Container).where(Container.code == code))
+    container = result.scalar_one_or_none()
+    if not container:
+        raise HTTPException(status_code=404, detail={"detail": "Container not found", "code": "NOT_FOUND"})
+
+    if not current_user.is_system_admin:
+        membership = await db.execute(
+            select(HouseMembership).where(
+                HouseMembership.house_id == container.house_id,
+                HouseMembership.user_id == current_user.id,
+            )
+        )
+        if not membership.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail={"detail": "Not a member", "code": "FORBIDDEN"})
+
+    return {"house_id": container.house_id, "container_id": container.id}
 
 
 @router.get("/{house_id}/containers", response_model=Page[ContainerSummary])

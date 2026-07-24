@@ -132,6 +132,12 @@ const router = createRouter({
       props: true,
       meta: { public: false, noShell: true },
     },
+    {
+      path: '/containers/:code',
+      component: () => import('@/views/print/ContainerCodeRedirectView.vue'),
+      props: true,
+      meta: { public: false, noShell: true },
+    },
   ],
 })
 

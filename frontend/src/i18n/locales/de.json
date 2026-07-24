@@ -121,6 +121,11 @@
     },
     "qr": {
       "download": "QR herunterladen"
+    },
+    "redirect": {
+      "loading": "Behälter wird gesucht...",
+      "not_found": "Behälter nicht gefunden. Dieser QR-Code ist möglicherweise nicht mehr gültig.",
+      "error": "Fehler bei der Suche nach dem Behälter."
     }
   },
   "item": {

@@ -115,6 +115,11 @@
     },
     "qr": {
       "download": "Descarregar QR"
+    },
+    "redirect": {
+      "loading": "A procurar contentor...",
+      "not_found": "Contentor não encontrado. Este código QR pode já não ser válido.",
+      "error": "Erro ao procurar o contentor."
     }
   },
   "item": {
