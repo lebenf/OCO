@@ -11,25 +11,45 @@ from app.services.ai.base import AIAnalysisResult
 from app.services.ai.prompts import build_prompt
 
 
+def _coerce_dict(data: object) -> dict | None:
+    """Some models answer a 'collection' hint with a list of per-item dicts
+    plus an aggregate entry instead of the single flat object the schema
+    asks for. Recover the aggregate (or the last dict) rather than failing
+    the whole job over a shape mismatch."""
+    if isinstance(data, dict):
+        return data
+    if isinstance(data, list):
+        dicts = [entry for entry in data if isinstance(entry, dict)]
+        for entry in dicts:
+            if entry.get("item_type") in ("set", "collection"):
+                return entry
+        if dicts:
+            return dicts[-1]
+    return None
+
+
 def _parse_result(raw: str) -> AIAnalysisResult:
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
         raise ValueError(f"AI response is not valid JSON: {raw[:200]}") from exc
-    if not isinstance(data, dict) or "name" not in data:
-        raise ValueError(f"AI response missing required 'name' field: {data}")
+
+    obj = _coerce_dict(data)
+    if obj is None or "name" not in obj:
+        raise ValueError(f"AI response missing required 'name' field: {str(data)[:200]}")
+
     return AIAnalysisResult(
-        name=str(data.get("name", "")),
-        description=str(data.get("description", "")),
-        item_type=str(data.get("item_type", "single")),
-        brand=data.get("brand"),
-        model=data.get("model"),
-        author=data.get("author"),
-        title=data.get("title"),
-        color=data.get("color"),
-        quantity=int(data.get("quantity", 1)),
-        tags=list(data.get("tags", [])),
-        confidence=float(data.get("confidence", 0.0)),
+        name=str(obj.get("name", "")),
+        description=str(obj.get("description", "")),
+        item_type=str(obj.get("item_type", "single")),
+        brand=obj.get("brand"),
+        model=obj.get("model"),
+        author=obj.get("author"),
+        title=obj.get("title"),
+        color=obj.get("color"),
+        quantity=int(obj.get("quantity", 1)),
+        tags=list(obj.get("tags", [])),
+        confidence=float(obj.get("confidence", 0.0)),
     )
 
 

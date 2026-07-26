@@ -27,16 +27,24 @@ HINT_INSTRUCTIONS: dict[str, dict[str, str]] = {
         "en": "The image shows a set of identical objects (e.g., 6 glasses). Use item_type='set' and indicate quantity.",
     },
     "collection": {
-        "it": "L'immagine mostra più oggetti diversi in una scatola. Usa item_type='collection' e descrivi il contenuto.",
-        "en": "The image shows multiple different objects in a box. Use item_type='collection' and describe the contents.",
+        "it": "L'immagine mostra più oggetti diversi in una scatola. Usa item_type='collection' e descrivi il contenuto. "
+        "Rispondi SEMPRE con un SOLO oggetto JSON, mai un array/lista: elenca gli oggetti diversi dentro il campo "
+        "description (es. \"Contiene: A, B, C\"), non creare un oggetto JSON separato per ciascuno.",
+        "en": "The image shows multiple different objects in a box. Use item_type='collection' and describe the contents. "
+        "ALWAYS respond with a SINGLE JSON object, never an array/list: list the distinct objects inside the "
+        "description field (e.g. \"Contains: A, B, C\"), do not create a separate JSON object for each one.",
     },
     "book": {
         "it": "L'immagine mostra un libro o rivista. Compila i campi author e title se visibili.",
         "en": "The image shows a book or magazine. Fill author and title if visible.",
     },
     "auto": {
-        "it": "Determina autonomamente il tipo di oggetto/i nella foto.",
-        "en": "Determine the type of object(s) in the photo autonomously.",
+        "it": "Determina autonomamente il tipo di oggetto/i nella foto. Se ci sono più oggetti diversi, usa "
+        "item_type='collection' o 'set' e descrivili nel campo description. Rispondi SEMPRE con un SOLO oggetto "
+        "JSON, mai un array/lista.",
+        "en": "Determine the type of object(s) in the photo autonomously. If there are multiple different objects, "
+        "use item_type='collection' or 'set' and describe them in the description field. ALWAYS respond with a "
+        "SINGLE JSON object, never an array/list.",
     },
 }
 
