@@ -28,6 +28,20 @@ def _coerce_dict(data: object) -> dict | None:
     return None
 
 
+def _coerce_color(value: object) -> str | None:
+    """Vision models sometimes answer with a list of colors instead of the
+    single string the schema asks for. Join it into one string rather than
+    failing the DB write over a shape mismatch."""
+    if value is None:
+        return None
+    if isinstance(value, list):
+        parts = [str(v) for v in value if v]
+        joined = ", ".join(parts) if parts else None
+    else:
+        joined = str(value)
+    return joined[:100] if joined else joined
+
+
 def _parse_result(raw: str) -> AIAnalysisResult:
     try:
         data = json.loads(raw)
@@ -46,7 +60,7 @@ def _parse_result(raw: str) -> AIAnalysisResult:
         model=obj.get("model"),
         author=obj.get("author"),
         title=obj.get("title"),
-        color=obj.get("color"),
+        color=_coerce_color(obj.get("color")),
         quantity=int(obj.get("quantity", 1)),
         tags=list(obj.get("tags", [])),
         confidence=float(obj.get("confidence", 0.0)),

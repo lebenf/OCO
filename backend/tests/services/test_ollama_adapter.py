@@ -50,3 +50,27 @@ def test_parse_result_list_missing_name_raises_truncated_error():
     with pytest.raises(ValueError) as exc_info:
         _parse_result(raw)
     assert len(str(exc_info.value)) < 300
+
+
+def test_parse_result_color_list_is_joined_into_string():
+    raw = json.dumps({"name": "Gravitrax", "color": ["white", "green", "black", "blue", "gray"]})
+    result = _parse_result(raw)
+    assert result.color == "white, green, black, blue, gray"
+
+
+def test_parse_result_color_string_is_kept_as_is():
+    raw = json.dumps({"name": "Lamp", "color": "red"})
+    result = _parse_result(raw)
+    assert result.color == "red"
+
+
+def test_parse_result_color_missing_is_none():
+    raw = json.dumps({"name": "Lamp"})
+    result = _parse_result(raw)
+    assert result.color is None
+
+
+def test_parse_result_color_list_truncated_to_column_length():
+    raw = json.dumps({"name": "Lamp", "color": [f"color-{i}" for i in range(30)]})
+    result = _parse_result(raw)
+    assert len(result.color) == 100
