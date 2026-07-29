@@ -74,3 +74,20 @@ def test_parse_result_color_list_truncated_to_column_length():
     raw = json.dumps({"name": "Lamp", "color": [f"color-{i}" for i in range(30)]})
     result = _parse_result(raw)
     assert len(result.color) == 100
+
+
+def test_parse_result_author_list_of_dicts_is_joined_into_string():
+    raw = json.dumps(
+        {
+            "name": "Kingdomino",
+            "author": [{"name": "Bruno Cathala"}, {"name": "Cyril Bouquet"}],
+        }
+    )
+    result = _parse_result(raw)
+    assert result.author == "Bruno Cathala, Cyril Bouquet"
+
+
+def test_parse_result_brand_list_truncated_to_column_length():
+    raw = json.dumps({"name": "Lamp", "brand": [f"brand-{i}" for i in range(30)]})
+    result = _parse_result(raw)
+    assert len(result.brand) == 100
