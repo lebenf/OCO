@@ -11,6 +11,7 @@
       <div v-if="container.destination_location" class="card-dest">
         {{ container.destination_location.house_name }} · {{ container.destination_location.name }}
       </div>
+      <div v-if="container.description" class="card-desc">{{ container.description }}</div>
       <div class="card-meta">
         <span class="num">{{ container.item_count }}</span> ogg.
         <template v-if="container.children_count > 0">
@@ -64,6 +65,11 @@ defineEmits<{ click: [container: ContainerSummary] }>()
   align-self: flex-start;
 }
 
+.card-desc {
+  font-size: 12px; color: var(--oco-ink-3);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .card-meta { font-size: 12px; color: var(--oco-ink-4); }
 .num { font-family: var(--oco-mono); font-variant-numeric: tabular-nums; color: var(--oco-ink-2); }
 </style>

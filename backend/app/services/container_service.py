@@ -141,6 +141,7 @@ async def _build_summary(container: Container, db: AsyncSession) -> ContainerSum
         id=container.id,
         code=container.code,
         status=container.status,
+        description=container.description,
         current_location=current_location,
         destination_location=destination_location,
         item_count=item_count,
@@ -395,7 +396,6 @@ async def get_container_detail(container: Container, db: AsyncSession) -> Contai
 
     return ContainerDetail(
         **summary.model_dump(),
-        description=container.description,
         width_cm=float(container.width_cm) if container.width_cm else None,
         depth_cm=float(container.depth_cm) if container.depth_cm else None,
         height_cm=float(container.height_cm) if container.height_cm else None,

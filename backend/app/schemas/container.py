@@ -78,6 +78,7 @@ class ContainerSummary(BaseModel):
     id: str
     code: str
     status: str
+    description: str | None = None
     current_location: LocationMini | None = None
     destination_location: LocationMini | None = None
     item_count: int
@@ -88,7 +89,6 @@ class ContainerSummary(BaseModel):
 
 
 class ContainerDetail(ContainerSummary):
-    description: str | None = None
     width_cm: float | None = None
     depth_cm: float | None = None
     height_cm: float | None = None

@@ -33,9 +33,12 @@
           @mousedown.prevent="select(c)"
           @mouseover="highlightedIndex = i"
         >
-          <span class="item-code mono">{{ c.code }}</span>
-          <StatusBadge :kind="c.status" size="sm" />
-          <span v-if="c.current_location" class="item-loc">{{ c.current_location.name }}</span>
+          <div class="item-row">
+            <span class="item-code mono">{{ c.code }}</span>
+            <StatusBadge :kind="c.status" size="sm" />
+            <span v-if="c.current_location" class="item-loc">{{ c.current_location.name }}</span>
+          </div>
+          <span v-if="c.description" class="item-desc">{{ c.description }}</span>
         </button>
       </div>
     </Teleport>
@@ -186,8 +189,8 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
 
 .combobox-item {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
   width: 100%;
   padding: 7px 10px;
   border: none;
@@ -200,8 +203,13 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
 .combobox-item.highlighted,
 .combobox-item:hover { background: var(--oco-surface-2); }
 
+.item-row { display: flex; align-items: center; gap: 8px; width: 100%; }
 .item-code { font-size: 13px; font-weight: 600; color: var(--oco-ink); flex-shrink: 0; }
 .item-loc { font-size: 12px; color: var(--oco-ink-4); flex: 1; text-align: right; }
+.item-desc {
+  font-size: 12px; color: var(--oco-ink-4);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 
 .combobox-empty { padding: 12px; font-size: 13px; color: var(--oco-ink-4); text-align: center; }
 </style>

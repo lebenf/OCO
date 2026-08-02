@@ -40,6 +40,7 @@ export interface ContainerSummary {
   id: string
   code: string
   status: string
+  description: string | null
   current_location: LocationMini | null
   destination_location: LocationMini | null
   item_count: number
@@ -50,7 +51,6 @@ export interface ContainerSummary {
 }
 
 export interface ContainerDetail extends ContainerSummary {
-  description: string | null
   width_cm: number | null
   depth_cm: number | null
   height_cm: number | null
