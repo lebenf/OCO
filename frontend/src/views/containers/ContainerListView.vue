@@ -15,18 +15,74 @@
         <option value="closed">{{ $t('status.closed') }}</option>
         <option value="sealed">{{ $t('status.sealed') }}</option>
       </select>
-      <button :class="['group-btn', { active: groupByLocation }]" @click="groupByLocation = !groupByLocation">
+      <button
+        :class="['group-btn', { active: groupByLocation }]"
+        :disabled="viewMode === 'table'"
+        @click="groupByLocation = !groupByLocation"
+      >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
           <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
         </svg>
         {{ $t('container.list.group_by_location') }}
       </button>
+
+      <div class="view-toggle">
+        <button
+          :class="['view-toggle-btn', { active: viewMode === 'icons' }]"
+          :aria-label="$t('container.list.view_icons')"
+          :title="$t('container.list.view_icons')"
+          @click="viewMode = 'icons'"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>
+        </button>
+        <button
+          :class="['view-toggle-btn', { active: viewMode === 'table' }]"
+          :aria-label="$t('container.list.view_table')"
+          :title="$t('container.list.view_table')"
+          @click="viewMode = 'table'"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
     </div>
+
+    <div v-if="viewMode === 'table' && selectedIds.size > 0" class="bulk-bar">
+      <span class="bulk-count num">{{ $t('container.list.selected_count', { n: selectedIds.size }) }}</span>
+      <div class="bulk-actions">
+        <Btn kind="soft" style="font-size:12px;padding:6px 12px" @click="goCreateTransfer">
+          {{ $t('container.list.create_transfer') }}
+        </Btn>
+        <Btn kind="ghost" style="font-size:12px;padding:6px 12px" @click="showAddToTransferDialog = true">
+          {{ $t('container.list.add_to_transfer') }}
+        </Btn>
+      </div>
+    </div>
+
+    <p v-if="successMsg" class="success-msg">{{ successMsg }}</p>
 
     <div v-if="store.loading" class="grid">
       <div v-for="i in 8" :key="i" class="skeleton"></div>
     </div>
+
+    <template v-else-if="viewMode === 'table'">
+      <ContainerTable
+        :containers="store.containers"
+        v-model:selected="selectedIds"
+        @row-click="goToContainer"
+      />
+
+      <div v-if="store.totalPages > 1" class="pagination">
+        <button :disabled="store.currentPage <= 1" class="page-btn" @click="changePage(store.currentPage - 1)">‹</button>
+        <span class="page-info num">{{ store.currentPage }} / {{ store.totalPages }}</span>
+        <button :disabled="store.currentPage >= store.totalPages" class="page-btn" @click="changePage(store.currentPage + 1)">›</button>
+      </div>
+    </template>
 
     <template v-else-if="groupByLocation">
       <div v-if="store.containers.length === 0" class="empty">
@@ -72,6 +128,14 @@
         <button :disabled="store.currentPage >= store.totalPages" class="page-btn" @click="changePage(store.currentPage + 1)">›</button>
       </div>
     </template>
+
+    <AddToTransferDialog
+      v-if="showAddToTransferDialog"
+      :house-id="houseId"
+      :container-ids="Array.from(selectedIds)"
+      @close="showAddToTransferDialog = false"
+      @added="onAddedToTransfer"
+    />
   </div>
 </template>
 
@@ -81,6 +145,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useContainersStore, type ContainerSummary } from '@/stores/containers'
 import ContainerCard from '@/components/containers/ContainerCard.vue'
+import ContainerTable from '@/components/containers/ContainerTable.vue'
+import AddToTransferDialog from '@/components/transfers/AddToTransferDialog.vue'
 import Btn from '@/components/primitives/Btn.vue'
 
 const props = defineProps<{ houseId: string }>()
@@ -91,15 +157,34 @@ const { t } = useI18n()
 const searchQuery = ref('')
 const statusFilter = ref('')
 const groupByLocation = ref(false)
+const viewMode = ref<'icons' | 'table'>('icons')
+const selectedIds = ref<Set<string>>(new Set())
+const showAddToTransferDialog = ref(false)
+const successMsg = ref('')
 let debounceTimer: ReturnType<typeof setTimeout>
 
 async function doFetch(page = 1): Promise<void> {
+  selectedIds.value = new Set()
   await store.fetchContainers(props.houseId, {
     search: searchQuery.value || undefined,
     status: statusFilter.value || undefined,
     page,
     size: groupByLocation.value ? 100 : 20,
   })
+}
+
+function goCreateTransfer(): void {
+  router.push({
+    path: `/houses/${props.houseId}/transfers/create`,
+    query: { container_ids: Array.from(selectedIds.value).join(',') },
+  })
+}
+
+function onAddedToTransfer(): void {
+  selectedIds.value = new Set()
+  showAddToTransferDialog.value = false
+  successMsg.value = t('container.list.added_to_transfer_success')
+  setTimeout(() => { successMsg.value = '' }, 3000)
 }
 function debouncedFetch(): void {
   clearTimeout(debounceTimer)
@@ -163,6 +248,31 @@ onMounted(() => doFetch())
 }
 .group-btn:hover { border-color: var(--oco-line-strong); color: var(--oco-ink); }
 .group-btn.active { background: var(--oco-primary-soft); border-color: var(--oco-primary); color: var(--oco-primary-ink); }
+.group-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.view-toggle { display: flex; border: 1px solid var(--oco-line); border-radius: var(--oco-r-md); overflow: hidden; flex-shrink: 0; }
+.view-toggle-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border: none; background: var(--oco-surface);
+  color: var(--oco-ink-3); cursor: pointer; transition: all 0.12s;
+}
+.view-toggle-btn + .view-toggle-btn { border-left: 1px solid var(--oco-line); }
+.view-toggle-btn:hover { color: var(--oco-ink); background: var(--oco-surface-2); }
+.view-toggle-btn.active { background: var(--oco-primary-soft); color: var(--oco-primary-ink); }
+
+.bulk-bar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--oco-s-3);
+  padding: var(--oco-s-3) var(--oco-s-4);
+  background: var(--oco-primary-soft); border: 1px solid var(--oco-primary);
+  border-radius: var(--oco-r-md);
+}
+.bulk-count { font-size: 13px; font-weight: 600; color: var(--oco-primary-ink); }
+.bulk-actions { display: flex; gap: var(--oco-s-2); }
+
+.success-msg {
+  color: var(--oco-ok); background: var(--oco-ok-soft);
+  font-size: 13px; padding: var(--oco-s-3); border-radius: var(--oco-r-md); margin: 0;
+}
 
 .grid {
   display: grid;

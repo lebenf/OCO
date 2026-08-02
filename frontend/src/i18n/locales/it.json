@@ -67,7 +67,22 @@
       "loading": "Caricamento...",
       "empty": "Nessuna scatola trovata",
       "group_by_location": "Raggruppa per ubicazione",
-      "no_location": "Senza ubicazione"
+      "no_location": "Senza ubicazione",
+      "view_icons": "Vista icone",
+      "view_table": "Vista tabella",
+      "selected_count": "{n} selezionate",
+      "select_all_page_hint": "Seleziona tutti gli elementi di questa pagina",
+      "create_transfer": "Crea un trasferimento",
+      "add_to_transfer": "Aggiungi a un trasferimento",
+      "col_code": "Codice",
+      "col_description": "Descrizione",
+      "col_status": "Stato",
+      "col_current_location": "Ubicazione attuale",
+      "col_destination_location": "Destinazione",
+      "col_items": "Oggetti",
+      "col_volume": "Volume",
+      "col_children": "Annidate",
+      "added_to_transfer_success": "Scatole aggiunte al trasferimento"
     },
     "detail": {
       "edit": "Modifica",
@@ -251,7 +266,8 @@
       "scheduled_date": "Data prevista",
       "vehicle_volume": "Volume mezzo (L)",
       "notes": "Note",
-      "submit": "Crea trasferimento"
+      "submit": "Crea trasferimento",
+      "preselected_count": "{n} scatole selezionate"
     },
     "plan": {
       "title": "Pianifica trasferimenti",
@@ -276,6 +292,12 @@
     "qr_scan": {
       "title": "Scansiona QR scatola",
       "scan_btn": "Leggi QR"
+    },
+    "add_dialog": {
+      "title": "Aggiungi a un trasferimento",
+      "no_planned": "Nessun trasferimento pianificato disponibile",
+      "container_count": "{n} scatole selezionate",
+      "confirm": "Aggiungi"
     }
   },
   "common": {

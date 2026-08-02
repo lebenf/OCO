@@ -67,7 +67,22 @@
       "loading": "Laden...",
       "empty": "Keine Kisten gefunden",
       "group_by_location": "Nach Standort gruppieren",
-      "no_location": "Kein Standort"
+      "no_location": "Kein Standort",
+      "view_icons": "Symbolansicht",
+      "view_table": "Tabellenansicht",
+      "selected_count": "{n} ausgewählt",
+      "select_all_page_hint": "Alle Elemente dieser Seite auswählen",
+      "create_transfer": "Transport erstellen",
+      "add_to_transfer": "Zu einem Transport hinzufügen",
+      "col_code": "Code",
+      "col_description": "Beschreibung",
+      "col_status": "Status",
+      "col_current_location": "Aktueller Standort",
+      "col_destination_location": "Zielort",
+      "col_items": "Objekte",
+      "col_volume": "Volumen",
+      "col_children": "Verschachtelt",
+      "added_to_transfer_success": "Kisten zum Transport hinzugefügt"
     },
     "detail": {
       "edit": "Bearbeiten",
@@ -251,7 +266,8 @@
       "scheduled_date": "Geplantes Datum",
       "vehicle_volume": "Fahrzeugvolumen (L)",
       "notes": "Notizen",
-      "submit": "Transport erstellen"
+      "submit": "Transport erstellen",
+      "preselected_count": "{n} Kisten ausgewählt"
     },
     "plan": {
       "title": "Transporte planen",
@@ -276,6 +292,12 @@
     "qr_scan": {
       "title": "Karton-QR scannen",
       "scan_btn": "QR scannen"
+    },
+    "add_dialog": {
+      "title": "Zu einem Transport hinzufügen",
+      "no_planned": "Keine geplanten Transporte verfügbar",
+      "container_count": "{n} Kisten ausgewählt",
+      "confirm": "Hinzufügen"
     }
   },
   "common": {

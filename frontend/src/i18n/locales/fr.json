@@ -67,7 +67,22 @@
       "loading": "Chargement...",
       "empty": "Aucune boîte trouvée",
       "group_by_location": "Grouper par emplacement",
-      "no_location": "Sans emplacement"
+      "no_location": "Sans emplacement",
+      "view_icons": "Vue icônes",
+      "view_table": "Vue tableau",
+      "selected_count": "{n} sélectionnées",
+      "select_all_page_hint": "Sélectionner tous les éléments de cette page",
+      "create_transfer": "Créer un transfert",
+      "add_to_transfer": "Ajouter à un transfert",
+      "col_code": "Code",
+      "col_description": "Description",
+      "col_status": "État",
+      "col_current_location": "Emplacement actuel",
+      "col_destination_location": "Destination",
+      "col_items": "Objets",
+      "col_volume": "Volume",
+      "col_children": "Imbriquées",
+      "added_to_transfer_success": "Boîtes ajoutées au transfert"
     },
     "detail": {
       "edit": "Modifier",
@@ -251,7 +266,8 @@
       "scheduled_date": "Date prévue",
       "vehicle_volume": "Volume du véhicule (L)",
       "notes": "Notes",
-      "submit": "Créer le transfert"
+      "submit": "Créer le transfert",
+      "preselected_count": "{n} boîtes sélectionnées"
     },
     "plan": {
       "title": "Planifier les transferts",
@@ -276,6 +292,12 @@
     "qr_scan": {
       "title": "Scanner le QR de la boîte",
       "scan_btn": "Scanner QR"
+    },
+    "add_dialog": {
+      "title": "Ajouter à un transfert",
+      "no_planned": "Aucun transfert planifié disponible",
+      "container_count": "{n} boîtes sélectionnées",
+      "confirm": "Ajouter"
     }
   },
   "common": {

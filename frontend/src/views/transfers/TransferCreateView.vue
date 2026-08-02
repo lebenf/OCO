@@ -9,6 +9,10 @@
 
     <Panel>
       <form class="create-form" @submit.prevent="handleCreate">
+        <p v-if="preselectedContainerIds.length" class="preselect-chip">
+          {{ $t('transfer.create.preselected_count', { n: preselectedContainerIds.length }) }}
+        </p>
+
         <div class="form-group">
           <label class="field-label">{{ $t('transfer.create.name') }} *</label>
           <input v-model="form.name" type="text" required />
@@ -53,8 +57,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useTransfersStore } from '@/stores/transfers'
 import { useHousesStore, type AllLocationsEntry } from '@/stores/houses'
 import Panel from '@/components/primitives/Panel.vue'
@@ -62,8 +66,14 @@ import Btn from '@/components/primitives/Btn.vue'
 
 const props = defineProps<{ houseId: string }>()
 const router = useRouter()
+const route = useRoute()
 const store = useTransfersStore()
 const housesStore = useHousesStore()
+
+const preselectedContainerIds = computed<string[]>(() => {
+  const raw = route.query.container_ids
+  return typeof raw === 'string' && raw ? raw.split(',').filter(Boolean) : []
+})
 
 const allLocations = ref<AllLocationsEntry[]>([])
 const saving = ref(false)
@@ -91,6 +101,7 @@ async function handleCreate(): Promise<void> {
       scheduled_date: form.value.scheduled_date || null,
       vehicle_volume_liters: form.value.vehicle_volume_liters,
       notes: form.value.notes || null,
+      container_ids: preselectedContainerIds.value.length ? preselectedContainerIds.value : undefined,
     })
     router.push(`/houses/${props.houseId}/transfers/${transfer.id}`)
   } catch (err: unknown) {
@@ -115,4 +126,5 @@ async function handleCreate(): Promise<void> {
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--oco-s-3); }
 @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
 .error-msg { color: var(--oco-danger); font-size: 13px; background: var(--oco-danger-soft); padding: var(--oco-s-3); border-radius: var(--oco-r-md); margin: 0; }
+.preselect-chip { color: var(--oco-primary-ink); background: var(--oco-primary-soft); font-size: 13px; font-weight: 500; padding: var(--oco-s-3); border-radius: var(--oco-r-md); margin: 0; }
 </style>

@@ -65,7 +65,22 @@
       "search": "Pesquisar...",
       "all_statuses": "Todos os estados",
       "loading": "A carregar...",
-      "empty": "Nenhuma caixa encontrada"
+      "empty": "Nenhuma caixa encontrada",
+      "view_icons": "Vista de ícones",
+      "view_table": "Vista de tabela",
+      "selected_count": "{n} selecionadas",
+      "select_all_page_hint": "Selecionar todos os itens desta página",
+      "create_transfer": "Criar uma transferência",
+      "add_to_transfer": "Adicionar a uma transferência",
+      "col_code": "Código",
+      "col_description": "Descrição",
+      "col_status": "Estado",
+      "col_current_location": "Localização atual",
+      "col_destination_location": "Destino",
+      "col_items": "Itens",
+      "col_volume": "Volume",
+      "col_children": "Aninhadas",
+      "added_to_transfer_success": "Caixas adicionadas à transferência"
     },
     "detail": {
       "edit": "Editar",
@@ -245,7 +260,8 @@
       "scheduled_date": "Data prevista",
       "vehicle_volume": "Volume do veículo (L)",
       "notes": "Notas",
-      "submit": "Criar transferência"
+      "submit": "Criar transferência",
+      "preselected_count": "{n} caixas selecionadas"
     },
     "plan": {
       "title": "Planear transferências",
@@ -266,6 +282,12 @@
       "transferred": "Transferidas",
       "active_transfers": "Transferências ativas",
       "all_containers": "Todas as caixas"
+    },
+    "add_dialog": {
+      "title": "Adicionar a uma transferência",
+      "no_planned": "Nenhuma transferência planeada disponível",
+      "container_count": "{n} caixas selecionadas",
+      "confirm": "Adicionar"
     }
   },
   "common": {

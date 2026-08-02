@@ -67,7 +67,22 @@
       "loading": "Loading...",
       "empty": "No containers found",
       "group_by_location": "Group by location",
-      "no_location": "No location"
+      "no_location": "No location",
+      "view_icons": "Icon view",
+      "view_table": "Table view",
+      "selected_count": "{n} selected",
+      "select_all_page_hint": "Select all items on this page",
+      "create_transfer": "Create a transfer",
+      "add_to_transfer": "Add to a transfer",
+      "col_code": "Code",
+      "col_description": "Description",
+      "col_status": "Status",
+      "col_current_location": "Current location",
+      "col_destination_location": "Destination",
+      "col_items": "Items",
+      "col_volume": "Volume",
+      "col_children": "Nested",
+      "added_to_transfer_success": "Containers added to transfer"
     },
     "detail": {
       "edit": "Edit",
@@ -251,7 +266,8 @@
       "scheduled_date": "Scheduled date",
       "vehicle_volume": "Vehicle volume (L)",
       "notes": "Notes",
-      "submit": "Create transfer"
+      "submit": "Create transfer",
+      "preselected_count": "{n} containers selected"
     },
     "plan": {
       "title": "Plan transfers",
@@ -276,6 +292,12 @@
     "qr_scan": {
       "title": "Scan box QR code",
       "scan_btn": "Scan QR"
+    },
+    "add_dialog": {
+      "title": "Add to a transfer",
+      "no_planned": "No planned transfers available",
+      "container_count": "{n} containers selected",
+      "confirm": "Add"
     }
   },
   "common": {

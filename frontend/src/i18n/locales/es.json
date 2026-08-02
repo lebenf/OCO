@@ -67,7 +67,22 @@
       "loading": "Cargando...",
       "empty": "No se encontraron cajas",
       "group_by_location": "Agrupar por ubicación",
-      "no_location": "Sin ubicación"
+      "no_location": "Sin ubicación",
+      "view_icons": "Vista de iconos",
+      "view_table": "Vista de tabla",
+      "selected_count": "{n} seleccionadas",
+      "select_all_page_hint": "Seleccionar todos los elementos de esta página",
+      "create_transfer": "Crear un traslado",
+      "add_to_transfer": "Añadir a un traslado",
+      "col_code": "Código",
+      "col_description": "Descripción",
+      "col_status": "Estado",
+      "col_current_location": "Ubicación actual",
+      "col_destination_location": "Destino",
+      "col_items": "Objetos",
+      "col_volume": "Volumen",
+      "col_children": "Anidadas",
+      "added_to_transfer_success": "Cajas añadidas al traslado"
     },
     "detail": {
       "edit": "Editar",
@@ -251,7 +266,8 @@
       "scheduled_date": "Fecha prevista",
       "vehicle_volume": "Volumen del vehículo (L)",
       "notes": "Notas",
-      "submit": "Crear traslado"
+      "submit": "Crear traslado",
+      "preselected_count": "{n} cajas seleccionadas"
     },
     "plan": {
       "title": "Planificar traslados",
@@ -276,6 +292,12 @@
     "qr_scan": {
       "title": "Escanear QR de la caja",
       "scan_btn": "Leer QR"
+    },
+    "add_dialog": {
+      "title": "Añadir a un traslado",
+      "no_planned": "No hay traslados planificados disponibles",
+      "container_count": "{n} cajas seleccionadas",
+      "confirm": "Añadir"
     }
   },
   "common": {
