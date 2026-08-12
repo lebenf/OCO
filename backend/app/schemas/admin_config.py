@@ -22,6 +22,7 @@ class AIConfigOut(BaseModel):
     ollama: OllamaConfigOut
     claude: CloudeConfigOut
     mistral: MistralConfigOut
+    ai_enrichment_enabled: bool
 
 
 class AIConfigUpdate(BaseModel):
@@ -30,6 +31,7 @@ class AIConfigUpdate(BaseModel):
     ollama_model: str | None = None
     claude_api_key: str | None = None
     mistral_api_key: str | None = None
+    ai_enrichment_enabled: bool | None = None
 
 
 class AITestOut(BaseModel):

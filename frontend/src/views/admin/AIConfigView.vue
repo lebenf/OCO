@@ -9,6 +9,19 @@
     </div>
 
     <form v-else class="config-form" @submit.prevent="handleSave">
+      <!-- AI Enrichment Toggle -->
+      <Panel :title="$t('admin.ai_config.ai_enrichment.title')">
+        <div class="field-group">
+          <label class="field-label">{{ $t('admin.ai_config.ai_enrichment.label') }}</label>
+          <div class="toggle-wrapper">
+            <input v-model="form.ai_enrichment_enabled" type="checkbox" id="ai-enrichment-toggle" class="toggle-input" />
+            <label for="ai-enrichment-toggle" class="toggle-label"></label>
+            <span class="toggle-text">{{ form.ai_enrichment_enabled ? $t('admin.ai_config.ai_enrichment.enabled') : $t('admin.ai_config.ai_enrichment.disabled') }}</span>
+          </div>
+          <p class="field-hint">{{ $t('admin.ai_config.ai_enrichment.description') }}</p>
+        </div>
+      </Panel>
+
       <!-- Provider selector -->
       <Panel :title="$t('admin.ai_config.active_provider')">
         <div class="provider-grid">
@@ -99,7 +112,7 @@ import Btn from '@/components/primitives/Btn.vue'
 
 interface OllamaOut { url: string; model: string; reachable: boolean }
 interface ProviderOut { configured: boolean }
-interface AIConfigOut { active_provider: string; ollama: OllamaOut; claude: ProviderOut; mistral: ProviderOut }
+interface AIConfigOut { active_provider: string; ollama: OllamaOut; claude: ProviderOut; mistral: ProviderOut; ai_enrichment_enabled: boolean }
 interface AITestOut { ok: boolean; latency_ms?: number; provider: string; error?: string }
 
 const providers = ['ollama', 'claude', 'mistral']
@@ -111,7 +124,7 @@ const saveSuccess = ref(false)
 const config = ref<AIConfigOut | null>(null)
 const testResult = ref<AITestOut | null>(null)
 
-const form = ref({ active_provider: 'ollama', ollama_url: '', ollama_model: '', claude_api_key: '', mistral_api_key: '' })
+const form = ref({ active_provider: 'ollama', ollama_url: '', ollama_model: '', claude_api_key: '', mistral_api_key: '', ai_enrichment_enabled: true })
 
 onMounted(async () => {
   const { data } = await api.get<AIConfigOut>('/admin/config/ai')
@@ -119,6 +132,7 @@ onMounted(async () => {
   form.value.active_provider = data.active_provider
   form.value.ollama_url = data.ollama.url
   form.value.ollama_model = data.ollama.model
+  form.value.ai_enrichment_enabled = data.ai_enrichment_enabled
   loading.value = false
 })
 
@@ -127,10 +141,11 @@ async function handleSave(): Promise<void> {
   saveError.value = ''
   saveSuccess.value = false
   try {
-    const payload: Record<string, string> = {
+    const payload: Record<string, string | boolean> = {
       active_provider: form.value.active_provider,
       ollama_url: form.value.ollama_url,
       ollama_model: form.value.ollama_model,
+      ai_enrichment_enabled: form.value.ai_enrichment_enabled,
     }
     if (form.value.claude_api_key) payload.claude_api_key = form.value.claude_api_key
     if (form.value.mistral_api_key) payload.mistral_api_key = form.value.mistral_api_key
@@ -184,6 +199,34 @@ async function handleTest(): Promise<void> {
 .fields { display: flex; flex-direction: column; gap: var(--oco-s-3); }
 .field-group { display: flex; flex-direction: column; gap: var(--oco-s-1); }
 .field-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--oco-ink-3); }
+.field-hint { font-size: 12px; color: var(--oco-ink-4); margin-top: var(--oco-s-1); }
+
+/* Toggle switch */
+.toggle-wrapper { display: flex; align-items: center; gap: var(--oco-s-2); }
+.toggle-input { display: none; }
+.toggle-label {
+  width: 44px;
+  height: 24px;
+  background: var(--oco-ink-4);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.toggle-label::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+.toggle-input:checked + .toggle-label { background: var(--oco-primary); }
+.toggle-input:checked + .toggle-label::before { transform: translateX(20px); }
+.toggle-text { font-size: 13px; font-weight: 500; color: var(--oco-ink-2); }
 
 /* Status indicators in panel header */
 .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }

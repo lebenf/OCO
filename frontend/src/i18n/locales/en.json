@@ -377,6 +377,13 @@
       "test_ok": "Connection OK",
       "test_failed": "Connection failed",
       "latency": "Latency: {ms}ms",
+      "ai_enrichment": {
+        "title": "AI Enrichment",
+        "label": "Enable AI enrichment",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "description": "Globally enable/disable AI analysis and automatic enrichment for items"
+      },
       "ollama": {
         "title": "Ollama",
         "url": "Ollama URL",

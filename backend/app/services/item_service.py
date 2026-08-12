@@ -12,6 +12,7 @@ from PIL import Image
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.ai_config import get_live_config
 from app.core.config import settings
 from app.models.ai_analysis_job import AIAnalysisJob
 from app.models.category import Category
@@ -163,12 +164,15 @@ async def create_draft_item(
     data: ItemCreate,
     created_by: str,
     db: AsyncSession,
-) -> tuple[Item, AIAnalysisJob]:
+) -> tuple[Item, AIAnalysisJob | None]:
+    ai_config = get_live_config()
+    ai_enabled = ai_config.get("ai_enrichment_enabled", True)
+    
     user_name = data.name if data.name and data.name != "placeholder" else None
     item = Item(
         container_id=container.id,
         house_id=house_id,
-        status="draft",
+        status="draft" if ai_enabled else "confirmed",
         item_type=data.item_type,
         name=user_name or "placeholder",
         created_by=created_by,
@@ -176,10 +180,16 @@ async def create_draft_item(
     db.add(item)
     await db.flush()
 
-    job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
-    await db.commit()
-    await db.refresh(item)
-    return item, job
+    if ai_enabled:
+        job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
+        await db.commit()
+        await db.refresh(item)
+        return item, job
+    else:
+        item.name = user_name or "placeholder"
+        await db.commit()
+        await db.refresh(item)
+        return item, None
 
 
 async def create_draft_items_batch(
@@ -188,22 +198,29 @@ async def create_draft_items_batch(
     items_data: list[ItemCreate],
     created_by: str,
     db: AsyncSession,
-) -> list[tuple[Item, AIAnalysisJob]]:
+) -> list[tuple[Item, AIAnalysisJob | None]]:
+    ai_config = get_live_config()
+    ai_enabled = ai_config.get("ai_enrichment_enabled", True)
+    
     results = []
     for data in items_data:
         user_name = data.name if data.name and data.name != "placeholder" else None
         item = Item(
             container_id=container.id,
             house_id=house_id,
-            status="draft",
+            status="draft" if ai_enabled else "confirmed",
             item_type=data.item_type,
             name=user_name or "placeholder",
             created_by=created_by,
         )
         db.add(item)
         await db.flush()
-        job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
-        results.append((item, job))
+        
+        if ai_enabled:
+            job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
+            results.append((item, job))
+        else:
+            results.append((item, None))
     await db.commit()
     for item, job in results:
         await db.refresh(item)
@@ -278,7 +295,16 @@ async def update_item(item: Item, data: ItemUpdate, house_id: str, db: AsyncSess
     return item
 
 
-async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysisJob:
+async def retry_ai(item: Item, requested_by: str, db: AsyncSession) -> AIAnalysisJob | None:
+    ai_config = get_live_config()
+    ai_enabled = ai_config.get("ai_enrichment_enabled", True)
+    
+    if not ai_enabled:
+        raise HTTPException(
+            status_code=400,
+            detail={"detail": "AI enrichment is disabled", "code": "AI_DISABLED"},
+        )
+    
     if item.status == "draft":
         raise HTTPException(
             status_code=400,

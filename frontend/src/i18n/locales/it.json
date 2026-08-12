@@ -377,6 +377,13 @@
       "test_ok": "Connessione OK",
       "test_failed": "Connessione fallita",
       "latency": "Latenza: {ms}ms",
+      "ai_enrichment": {
+        "title": "Arricchimento AI",
+        "label": "Attiva arricchimento AI",
+        "enabled": "Attivato",
+        "disabled": "Disattivato",
+        "description": "Abilita/disabilita completamente l'analisi e l'arricchimento automatico degli oggetti con l'AI"
+      },
       "ollama": {
         "title": "Ollama",
         "url": "URL Ollama",

@@ -31,6 +31,7 @@ async def get_ai_config(_: User = Depends(get_admin_user)):
         ollama=OllamaConfigOut(url=cfg["ollama_url"], model=cfg["ollama_model"], reachable=reachable),
         claude=CloudeConfigOut(configured=bool(cfg.get("claude_api_key"))),
         mistral=MistralConfigOut(configured=bool(cfg.get("mistral_api_key"))),
+        ai_enrichment_enabled=cfg.get("ai_enrichment_enabled", True),
     )
 
 
@@ -47,6 +48,8 @@ async def update_ai_config(data: AIConfigUpdate, _: User = Depends(get_admin_use
         updates["claude_api_key"] = data.claude_api_key
     if data.mistral_api_key is not None:
         updates["mistral_api_key"] = data.mistral_api_key
+    if data.ai_enrichment_enabled is not None:
+        updates["ai_enrichment_enabled"] = data.ai_enrichment_enabled
 
     save_live_config(updates)
 
@@ -57,6 +60,7 @@ async def update_ai_config(data: AIConfigUpdate, _: User = Depends(get_admin_use
         ollama=OllamaConfigOut(url=cfg["ollama_url"], model=cfg["ollama_model"], reachable=reachable),
         claude=CloudeConfigOut(configured=bool(cfg.get("claude_api_key"))),
         mistral=MistralConfigOut(configured=bool(cfg.get("mistral_api_key"))),
+        ai_enrichment_enabled=cfg.get("ai_enrichment_enabled", True),
     )
 
 

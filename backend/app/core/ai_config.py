@@ -29,13 +29,15 @@ def _load_file() -> dict:
 
 def get_live_config() -> dict:
     """Merge env defaults with file overrides. Keys: active_provider, ollama_url,
-    ollama_model, claude_api_key (empty str if not set), mistral_api_key."""
+    ollama_model, claude_api_key (empty str if not set), mistral_api_key,
+    ai_enrichment_enabled."""
     defaults = {
         "active_provider": settings.AI_PROVIDER,
         "ollama_url": settings.OLLAMA_URL,
         "ollama_model": settings.OLLAMA_MODEL,
         "claude_api_key": settings.CLAUDE_API_KEY,
         "mistral_api_key": settings.MISTRAL_API_KEY,
+        "ai_enrichment_enabled": True,
     }
     overrides = _load_file()
     return {**defaults, **overrides}
