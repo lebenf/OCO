@@ -3,6 +3,7 @@
 import io
 import json
 import math
+import shutil
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,6 +43,44 @@ def _photo_url(file_path: str) -> str:
 
 def _temp_photo_path(photo_id: str) -> str:
     return str(Path("temp") / f"{photo_id}.jpg")
+
+
+async def promote_temp_photos(item: Item, photo_paths: list[str], db: AsyncSession) -> None:
+    """Move uploaded temp photos into the item's permanent storage and register them.
+
+    Called by the AI job processor whatever the analysis outcome, and directly at
+    creation time when AI enrichment is disabled: photos must never stay stranded
+    in temp/ just because no job ran.
+    """
+    storage = Path(settings.STORAGE_PATH)
+    existing = (await db.execute(
+        select(func.count()).select_from(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalar_one()
+    if existing:
+        # Already promoted (e.g. a previous failed attempt already moved these
+        # files); retry jobs re-submit the now-permanent paths, which must not
+        # be moved again.
+        return
+
+    for i, rel_temp in enumerate(photo_paths):
+        src = storage / rel_temp
+        if not src.exists():
+            continue
+        dest_dir = storage / item.house_id / "items" / item.id
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        filename = f"{uuid.uuid4()}.jpg"
+        dest = dest_dir / filename
+        shutil.move(str(src), str(dest))
+        rel_dest = str(Path(item.house_id) / "items" / item.id / filename)
+        photo = ItemPhoto(
+            item_id=item.id,
+            file_path=rel_dest,
+            mime_type="image/jpeg",
+            file_size_bytes=dest.stat().st_size,
+            sort_order=existing + i,
+            is_primary=(existing + i == 0),
+        )
+        db.add(photo)
 
 
 async def _get_or_create_category(name: str, house_id: str, db: AsyncSession) -> Category:
@@ -186,7 +225,8 @@ async def create_draft_item(
         await db.refresh(item)
         return item, job
     else:
-        item.name = user_name or "placeholder"
+        # No job will ever run for this item, so promote its photos right away.
+        await promote_temp_photos(item, [_temp_photo_path(pid) for pid in data.photo_ids], db)
         await db.commit()
         await db.refresh(item)
         return item, None
@@ -220,6 +260,7 @@ async def create_draft_items_batch(
             job = await _enqueue_ai_job(item, house_id, created_by, data.hint_type, data.language, data.photo_ids, db, name_hint=user_name)
             results.append((item, job))
         else:
+            await promote_temp_photos(item, [_temp_photo_path(pid) for pid in data.photo_ids], db)
             results.append((item, None))
     await db.commit()
     for item, job in results:

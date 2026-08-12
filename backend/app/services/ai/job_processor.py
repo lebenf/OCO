@@ -3,20 +3,17 @@
 import asyncio
 import json
 import logging
-import shutil
-import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.models.ai_analysis_job import AIAnalysisJob
 from app.models.item import Item
-from app.models.item_photo import ItemPhoto
 from app.services.ai.base import AIAnalysisResult
 from app.services.ai.factory import get_ai_adapter
+from app.services.item_service import promote_temp_photos
 
 logger = logging.getLogger(__name__)
 
@@ -70,38 +67,6 @@ def _apply_result_to_item(item: Item, result: AIAnalysisResult, provider: str, n
     })
     item.status = "draft_ai_done"
     item.ai_error = None
-
-
-async def _promote_temp_photos(item: Item, photo_paths: list[str], db: AsyncSession) -> None:
-    storage = Path(settings.STORAGE_PATH)
-    existing = (await db.execute(
-        select(func.count()).select_from(ItemPhoto).where(ItemPhoto.item_id == item.id)
-    )).scalar_one()
-    if existing:
-        # Already promoted (e.g. a previous failed attempt already moved these
-        # files); retry jobs re-submit the now-permanent paths, which must not
-        # be moved again.
-        return
-
-    for i, rel_temp in enumerate(photo_paths):
-        src = storage / rel_temp
-        if not src.exists():
-            continue
-        dest_dir = storage / item.house_id / "items" / item.id
-        dest_dir.mkdir(parents=True, exist_ok=True)
-        filename = f"{uuid.uuid4()}.jpg"
-        dest = dest_dir / filename
-        shutil.move(str(src), str(dest))
-        rel_dest = str(Path(item.house_id) / "items" / item.id / filename)
-        photo = ItemPhoto(
-            item_id=item.id,
-            file_path=rel_dest,
-            mime_type="image/jpeg",
-            file_size_bytes=dest.stat().st_size,
-            sort_order=existing + i,
-            is_primary=(existing + i == 0),
-        )
-        db.add(photo)
 
 
 async def process_next_job(db: AsyncSession) -> bool:
@@ -164,7 +129,7 @@ async def process_next_job(db: AsyncSession) -> bool:
         # Photos must survive regardless of AI outcome — never leave them
         # stranded in temp/ just because analysis failed or timed out.
         if item and photo_paths:
-            await _promote_temp_photos(item, photo_paths, db)
+            await promote_temp_photos(item, photo_paths, db)
 
     await db.commit()
     return True
