@@ -78,7 +78,7 @@ const itemsStore = useItemsStore()
 const { t } = useI18n()
 
 const form = ref({ hint_type: 'auto', name: '' })
-const selectedPhotos = ref<{ file: File; preview: string }[]>([])
+const selectedPhotos = ref<{ file: File; preview: string; id?: string }[]>([])
 const saving = ref(false)
 const error = ref('')
 const lastCreated = ref<ItemDetail | null>(null)
@@ -91,13 +91,23 @@ const steps = computed(() => [
 ])
 
 function handlePhotoSelect(event: Event): void {
-  const files = (event.target as HTMLInputElement).files
-  if (!files) return
-  selectedPhotos.value = Array.from(files).map((f) => ({
-    file: f,
-    preview: URL.createObjectURL(f),
-  }))
+  const input = event.target as HTMLInputElement
+  const files = input.files
+  if (!files || files.length === 0) return
+  // Append: the "+" tile reopens this same picker, and replacing the selection
+  // silently threw away every shot taken before the last one.
+  selectedPhotos.value = [
+    ...selectedPhotos.value,
+    ...Array.from(files).map((f) => ({ file: f, preview: URL.createObjectURL(f) })),
+  ]
+  // Clear the input so re-picking the same file still fires "change".
+  input.value = ''
   pipelineStep.value = 1
+}
+
+function clearSelection(): void {
+  for (const p of selectedPhotos.value) URL.revokeObjectURL(p.preview)
+  selectedPhotos.value = []
 }
 
 async function handleCapture(): Promise<void> {
@@ -105,17 +115,22 @@ async function handleCapture(): Promise<void> {
   error.value = ''
   pipelineStep.value = 1
   try {
-    const photoIds: string[] = []
-    for (const { file } of selectedPhotos.value) {
+    // Photos already uploaded by a previous failed attempt keep their id, so a
+    // retry reuses them instead of leaving a second copy stranded in temp/.
+    for (const photo of selectedPhotos.value) {
+      if (photo.id) continue
       const formData = new FormData()
-      formData.append('files', file)
+      formData.append('files', photo.file)
       const res = await api.post<{ id: string; url: string }[]>(
         `/houses/${props.houseId}/ai/temp-photos`,
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } },
       )
-      photoIds.push(...res.data.map((p: { id: string; url: string }) => p.id))
+      photo.id = res.data[0]?.id
     }
+    const photoIds = selectedPhotos.value
+      .map((p) => p.id)
+      .filter((id): id is string => Boolean(id))
     pipelineStep.value = 2
     const item = await itemsStore.createItem(props.houseId, props.containerId, {
       item_type: 'single',
@@ -126,7 +141,7 @@ async function handleCapture(): Promise<void> {
     lastCreated.value = item
     pipelineStep.value = 0
     form.value.name = ''
-    selectedPhotos.value = []
+    clearSelection()
   } catch (err: unknown) {
     const e = err as { response?: { data?: { detail?: string } } }
     error.value = e.response?.data?.detail ?? String(err)
