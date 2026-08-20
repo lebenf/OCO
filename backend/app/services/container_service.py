@@ -360,6 +360,38 @@ async def delete_photo(photo: ContainerPhoto, db: AsyncSession) -> None:
     await db.commit()
 
 
+async def delete_container_with_files(container: Container, db: AsyncSession) -> None:
+    """Delete a container, its items (DB cascade) and every photo file involved.
+
+    Both the container's own photos and those of the items it holds, since the
+    cascade removes the rows and would otherwise orphan the files on disk.
+    """
+    from app.services.item_service import delete_item_files
+
+    storage = Path(settings.STORAGE_PATH)
+
+    items = (await db.execute(
+        select(Item).where(Item.container_id == container.id)
+    )).scalars().all()
+    for item in items:
+        await delete_item_files(item, db)
+
+    photos = (await db.execute(
+        select(ContainerPhoto).where(ContainerPhoto.container_id == container.id)
+    )).scalars().all()
+    for photo in photos:
+        (storage / photo.file_path).unlink(missing_ok=True)
+
+    container_dir = storage / container.house_id / "containers" / container.id
+    try:
+        container_dir.rmdir()
+    except OSError:
+        pass
+
+    await db.delete(container)
+    await db.commit()
+
+
 async def get_container_detail(container: Container, db: AsyncSession) -> ContainerDetail:
     summary = await _build_summary(container, db)
 

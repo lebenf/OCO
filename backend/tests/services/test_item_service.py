@@ -11,9 +11,17 @@ from app.core.config import settings
 from app.models.container import Container
 from app.models.house import House
 from app.models.house_membership import HouseMembership
+from app.models.item import Item
 from app.models.item_photo import ItemPhoto
 from app.schemas.item import ItemCreate
-from app.services.item_service import create_draft_item, create_draft_items_batch
+from app.services.container_service import delete_container_with_files
+from app.services.item_service import (
+    _temp_photo_path,
+    create_draft_item,
+    create_draft_items_batch,
+    delete_item_with_files,
+    promote_temp_photos,
+)
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -142,3 +150,152 @@ async def test_photos_left_to_worker_when_ai_enabled(
     )).scalars().all()
     assert photos == []
     assert (tmp_path / rel_temp).exists()
+
+
+@pytest.mark.asyncio
+async def test_new_photo_promoted_even_if_item_already_has_one(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    """Regression: a photo added meanwhile must not block promotion of a new one.
+
+    This is what stranded 32 photos in temp/ in July — the item had picked up a
+    photo from the edit view before the AI job finished, and the old guard then
+    dropped the captured one entirely.
+    """
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+
+    with _ai_disabled():
+        item, _ = await create_draft_item(
+            container, house.id, ItemCreate(photo_ids=[], name="Casse"), admin_user.id, db_session
+        )
+    manual_dir = tmp_path / house.id / "items" / item.id
+    manual_dir.mkdir(parents=True)
+    (manual_dir / "manual.jpg").write_bytes(b"\xff\xd8\xff\xe0manual")
+    db_session.add(ItemPhoto(
+        item_id=item.id,
+        file_path=str(Path(house.id) / "items" / item.id / "manual.jpg"),
+        original_filename="from-gallery.jpg",
+        mime_type="image/jpeg",
+        file_size_bytes=6,
+        sort_order=0,
+        is_primary=True,
+    ))
+    await db_session.commit()
+
+    rel_temp = _write_temp_photo(str(tmp_path), "photo-late")
+    await promote_temp_photos(item, [rel_temp], db_session)
+    await db_session.commit()
+
+    photos = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id).order_by(ItemPhoto.sort_order)
+    )).scalars().all()
+    assert len(photos) == 2
+    assert photos[0].is_primary and not photos[1].is_primary
+    assert photos[1].sort_order == 1
+    assert (tmp_path / photos[1].file_path).exists()
+    assert not (tmp_path / rel_temp).exists()
+
+
+@pytest.mark.asyncio
+async def test_already_permanent_path_is_not_moved_again(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    """A retry job re-submits permanent paths; they must be ignored, not duplicated."""
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    rel_temp = _write_temp_photo(str(tmp_path), "photo-3")
+
+    with _ai_disabled():
+        item, _ = await create_draft_item(
+            container, house.id, ItemCreate(photo_ids=["photo-3"]), admin_user.id, db_session
+        )
+    permanent = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalar_one().file_path
+
+    await promote_temp_photos(item, [permanent], db_session)
+    await db_session.commit()
+
+    photos = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalars().all()
+    assert len(photos) == 1
+    assert (tmp_path / permanent).exists()
+    assert not (tmp_path / rel_temp).exists()
+
+
+@pytest.mark.asyncio
+async def test_path_outside_temp_is_rejected(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    """photo_ids come from the client; a crafted id must not pull in outside files."""
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    (tmp_path / "temp").mkdir(parents=True, exist_ok=True)
+    secret = tmp_path.parent / "secret.jpg"
+    secret.write_bytes(b"\xff\xd8\xff\xe0secret")
+
+    item = Item(
+        house_id=house.id, container_id=container.id, created_by=admin_user.id,
+        name="x", item_type="single", status="confirmed",
+    )
+    db_session.add(item)
+    await db_session.flush()
+
+    await promote_temp_photos(item, [_temp_photo_path("../../secret")], db_session)
+    await db_session.commit()
+
+    photos = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalars().all()
+    assert photos == []
+    assert secret.exists()
+
+
+@pytest.mark.asyncio
+async def test_delete_item_removes_photo_files(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    _write_temp_photo(str(tmp_path), "photo-4")
+
+    with _ai_disabled():
+        item, _ = await create_draft_item(
+            container, house.id, ItemCreate(photo_ids=["photo-4"]), admin_user.id, db_session
+        )
+    photo_path = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalar_one().file_path
+    item_dir = tmp_path / house.id / "items" / item.id
+    assert (tmp_path / photo_path).exists()
+
+    await delete_item_with_files(item, db_session)
+
+    assert not (tmp_path / photo_path).exists()
+    assert not item_dir.exists()
+    assert (await db_session.execute(select(ItemPhoto).where(ItemPhoto.item_id == item.id))).scalars().all() == []
+
+
+@pytest.mark.asyncio
+async def test_delete_container_removes_its_items_photo_files(
+    db_session: AsyncSession, admin_user, house_with_container, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(settings, "STORAGE_PATH", str(tmp_path))
+    house, container = house_with_container
+    _write_temp_photo(str(tmp_path), "photo-5")
+
+    with _ai_disabled():
+        item, _ = await create_draft_item(
+            container, house.id, ItemCreate(photo_ids=["photo-5"]), admin_user.id, db_session
+        )
+    photo_path = (await db_session.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalar_one().file_path
+    assert (tmp_path / photo_path).exists()
+
+    await delete_container_with_files(container, db_session)
+
+    assert not (tmp_path / photo_path).exists()
+    assert await db_session.get(Item, item.id) is None

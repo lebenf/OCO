@@ -28,6 +28,7 @@ from app.schemas.pagination import Page
 from app.services.container_service import (
     close_container,
     create_container,
+    delete_container_with_files,
     delete_photo,
     generate_label_sheet_pdf,
     get_container_detail,
@@ -193,8 +194,7 @@ async def delete_container_endpoint(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     container = await get_container_or_404(container_id, house.id, db)
-    await db.delete(container)
-    await db.commit()
+    await delete_container_with_files(container, db)
 
 
 @router.get("/{house_id}/containers/{container_id}/qr")

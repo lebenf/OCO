@@ -27,6 +27,7 @@ from app.services.item_service import (
     create_draft_item,
     create_draft_items_batch,
     delete_item_photo,
+    delete_item_with_files,
     get_inbox,
     get_item_detail,
     get_item_or_404,
@@ -134,8 +135,7 @@ async def delete_item(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     item = await get_item_or_404(item_id, house.id, db)
-    await db.delete(item)
-    await db.commit()
+    await delete_item_with_files(item, db)
 
 
 @router.put("/{house_id}/items/{item_id}/confirm", response_model=ItemDetail)

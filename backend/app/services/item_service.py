@@ -51,20 +51,24 @@ async def promote_temp_photos(item: Item, photo_paths: list[str], db: AsyncSessi
     Called by the AI job processor whatever the analysis outcome, and directly at
     creation time when AI enrichment is disabled: photos must never stay stranded
     in temp/ just because no job ran.
+
+    Only paths still under temp/ are promoted. Retry jobs re-submit the paths of
+    photos an earlier attempt already made permanent, and those must not be moved
+    again — but a photo the item picked up in the meantime (e.g. added by hand
+    from the edit view) must not stop the new ones from being promoted, which is
+    what an "item already has photos" guard used to do.
     """
     storage = Path(settings.STORAGE_PATH)
-    existing = (await db.execute(
+    temp_root = (storage / "temp").resolve()
+    next_order = (await db.execute(
         select(func.count()).select_from(ItemPhoto).where(ItemPhoto.item_id == item.id)
     )).scalar_one()
-    if existing:
-        # Already promoted (e.g. a previous failed attempt already moved these
-        # files); retry jobs re-submit the now-permanent paths, which must not
-        # be moved again.
-        return
 
-    for i, rel_temp in enumerate(photo_paths):
-        src = storage / rel_temp
-        if not src.exists():
+    for rel_path in photo_paths:
+        src = (storage / rel_path).resolve()
+        # Reject anything outside temp/: already-permanent paths from a retry, and
+        # ids crafted to escape the storage root.
+        if src.parent != temp_root or not src.is_file():
             continue
         dest_dir = storage / item.house_id / "items" / item.id
         dest_dir.mkdir(parents=True, exist_ok=True)
@@ -77,10 +81,11 @@ async def promote_temp_photos(item: Item, photo_paths: list[str], db: AsyncSessi
             file_path=rel_dest,
             mime_type="image/jpeg",
             file_size_bytes=dest.stat().st_size,
-            sort_order=existing + i,
-            is_primary=(existing + i == 0),
+            sort_order=next_order,
+            is_primary=(next_order == 0),
         )
         db.add(photo)
+        next_order += 1
 
 
 async def _get_or_create_category(name: str, house_id: str, db: AsyncSession) -> Category:
@@ -469,6 +474,33 @@ async def delete_item_photo(photo_id: str, item_id: str, db: AsyncSession) -> No
     if full_path.exists():
         full_path.unlink()
     await db.delete(photo)
+    await db.commit()
+
+
+async def delete_item_files(item: Item, db: AsyncSession) -> None:
+    """Unlink the photo files an item owns, and its now-empty storage directory.
+
+    The DB cascade drops the item_photos rows, but the files on disk are ours to
+    remove — without this every deleted item left its photos behind forever.
+    """
+    storage = Path(settings.STORAGE_PATH)
+    photos = (await db.execute(
+        select(ItemPhoto).where(ItemPhoto.item_id == item.id)
+    )).scalars().all()
+    for photo in photos:
+        (storage / photo.file_path).unlink(missing_ok=True)
+
+    item_dir = storage / item.house_id / "items" / item.id
+    try:
+        item_dir.rmdir()
+    except OSError:
+        # Not empty (an unreferenced file we didn't put there) or already gone.
+        pass
+
+
+async def delete_item_with_files(item: Item, db: AsyncSession) -> None:
+    await delete_item_files(item, db)
+    await db.delete(item)
     await db.commit()
 
 
