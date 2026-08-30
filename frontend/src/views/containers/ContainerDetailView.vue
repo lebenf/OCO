@@ -229,8 +229,8 @@ const draftInboxItems = computed((): DraftItemSummary[] =>
 async function load(): Promise<void> {
   const [c, confirmedPage, draftPage] = await Promise.all([
     store.fetchContainer(props.houseId, props.containerId),
-    itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'confirmed' }),
-    itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'draft_ai_done,draft_ai_failed' }),
+    itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'confirmed', size: 100 }),
+    itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'draft_ai_done,draft_ai_failed', size: 100 }),
     store.fetchContainers(props.houseId, { size: 100 }),
   ])
   container.value = c
