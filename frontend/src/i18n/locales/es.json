@@ -96,6 +96,9 @@
       "add_item": "Añadir objeto",
       "qr": "Código QR",
       "print_labels": "Imprimir etiquetas",
+      "move_into": "Mover a otra caja",
+      "move_save": "Mover",
+      "move_moving": "Moviendo...",
       "children": "Cajas anidadas",
       "items": "Objetos",
       "in_review": "En revisión",
@@ -135,7 +138,8 @@
       "label": "Código de caja"
     },
     "qr": {
-      "download": "Descargar QR"
+      "download": "Descargar QR",
+      "download_thermal": "Descargar etiqueta (impresora térmica)"
     },
     "redirect": {
       "loading": "Buscando contenedor...",
@@ -255,7 +259,7 @@
       "complete": "Completar traslado",
       "containers": "Cajas",
       "add_container": "Añadir caja",
-      "container_code_placeholder": "ej. A-001",
+      "add_selected": "Añadir {n} cajas",
       "no_containers": "No hay cajas en el traslado"
     },
     "create": {

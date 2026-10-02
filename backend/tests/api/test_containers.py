@@ -80,6 +80,96 @@ async def test_nesting_max_depth_rejected(container_client):
     assert resp.json()["detail"]["code"] == "MAX_NESTING_DEPTH"
 
 
+# ── Move / re-nest ────────────────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_move_container_into_another(container_client):
+    client, house = container_client
+    box_a = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    box_b = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{box_b['id']}/move", json={"parent_id": box_a["id"]}
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["parent"]["id"] == box_a["id"]
+    assert data["nesting_level"] == 1
+
+
+@pytest.mark.asyncio
+async def test_move_container_cascades_descendant_levels(container_client):
+    client, house = container_client
+    box_a = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    box_b = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    child = (await client.post(f"/api/houses/{house.id}/containers", json={"parent_id": box_b["id"]})).json()
+    assert child["nesting_level"] == 1
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{box_b['id']}/move", json={"parent_id": box_a["id"]}
+    )
+    assert resp.status_code == 200
+    assert resp.json()["nesting_level"] == 1
+
+    child_detail = (await client.get(f"/api/houses/{house.id}/containers/{child['id']}")).json()
+    assert child_detail["nesting_level"] == 2
+
+
+@pytest.mark.asyncio
+async def test_move_container_rejects_cycle(container_client):
+    client, house = container_client
+    parent = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    child = (await client.post(f"/api/houses/{house.id}/containers", json={"parent_id": parent["id"]})).json()
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{parent['id']}/move", json={"parent_id": child["id"]}
+    )
+    assert resp.status_code == 400
+    assert resp.json()["detail"]["code"] == "INVALID_PARENT"
+
+
+@pytest.mark.asyncio
+async def test_move_container_rejects_self(container_client):
+    client, house = container_client
+    box = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{box['id']}/move", json={"parent_id": box["id"]}
+    )
+    assert resp.status_code == 400
+    assert resp.json()["detail"]["code"] == "INVALID_PARENT"
+
+
+@pytest.mark.asyncio
+async def test_move_container_rejects_max_depth(container_client):
+    client, house = container_client
+    parent = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    child = (await client.post(f"/api/houses/{house.id}/containers", json={"parent_id": parent["id"]})).json()
+    grandchild = (await client.post(f"/api/houses/{house.id}/containers", json={"parent_id": child["id"]})).json()
+    other = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{other['id']}/move", json={"parent_id": grandchild["id"]}
+    )
+    assert resp.status_code == 400
+    assert resp.json()["detail"]["code"] == "MAX_NESTING_DEPTH"
+
+
+@pytest.mark.asyncio
+async def test_move_container_to_top_level(container_client):
+    client, house = container_client
+    parent = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+    child = (await client.post(f"/api/houses/{house.id}/containers", json={"parent_id": parent["id"]})).json()
+
+    resp = await client.post(
+        f"/api/houses/{house.id}/containers/{child['id']}/move", json={"parent_id": None}
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["parent"] is None
+    assert data["nesting_level"] == 0
+
+
 # ── CRUD ──────────────────────────────────────────────────────────────────────
 
 @pytest.mark.asyncio
@@ -269,6 +359,41 @@ async def test_labels_pdf_rejects_out_of_range(container_client):
         params={"count": 0},
     )
     assert resp.status_code == 422
+
+
+# ── Thermal label PNG ─────────────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_thermal_label_returns_png(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={"description": "Libri e quaderni"})).json()
+
+    resp = await client.get(f"/api/houses/{house.id}/containers/{c['id']}/label.png")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"] == "image/png"
+    assert resp.content[:4] == b"\x89PNG"
+
+
+@pytest.mark.asyncio
+async def test_thermal_label_without_description(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.get(f"/api/houses/{house.id}/containers/{c['id']}/label.png")
+    assert resp.status_code == 200
+    assert resp.content[:4] == b"\x89PNG"
+
+
+@pytest.mark.asyncio
+async def test_thermal_label_custom_width(container_client):
+    client, house = container_client
+    c = (await client.post(f"/api/houses/{house.id}/containers", json={})).json()
+
+    resp = await client.get(f"/api/houses/{house.id}/containers/{c['id']}/label.png", params={"width": 384})
+    assert resp.status_code == 200
+    from PIL import Image
+    img = Image.open(io.BytesIO(resp.content))
+    assert img.width == 384
 
 
 # ── Access control ────────────────────────────────────────────────────────────

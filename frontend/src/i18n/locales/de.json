@@ -96,6 +96,9 @@
       "add_item": "Objekt hinzufügen",
       "qr": "QR-Code",
       "print_labels": "Etiketten drucken",
+      "move_into": "In eine andere Kiste verschieben",
+      "move_save": "Verschieben",
+      "move_moving": "Wird verschoben...",
       "children": "Verschachtelte Kisten",
       "items": "Objekte",
       "in_review": "In Überprüfung",
@@ -135,7 +138,8 @@
       "label": "Kistencode"
     },
     "qr": {
-      "download": "QR herunterladen"
+      "download": "QR herunterladen",
+      "download_thermal": "Etikett herunterladen (Thermodrucker)"
     },
     "redirect": {
       "loading": "Behälter wird gesucht...",
@@ -255,7 +259,7 @@
       "complete": "Transport abschließen",
       "containers": "Kisten",
       "add_container": "Kiste hinzufügen",
-      "container_code_placeholder": "z.B. A-001",
+      "add_selected": "{n} Kisten hinzufügen",
       "no_containers": "Keine Kisten im Transport"
     },
     "create": {

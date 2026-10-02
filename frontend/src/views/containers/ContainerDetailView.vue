@@ -153,6 +153,20 @@
           </RouterLink>
         </Panel>
 
+        <!-- Move into another box -->
+        <Panel :title="$t('container.detail.move_into')">
+          <NestingSelector v-model="moveTargetId" :containers="availableContainers" :exclude-id="container.id" />
+          <Btn
+            kind="soft"
+            style="margin-top: var(--oco-s-3)"
+            :disabled="moving || moveTargetId === (container.parent?.id ?? null)"
+            @click="handleMove"
+          >
+            {{ moving ? $t('container.detail.move_moving') : $t('container.detail.move_save') }}
+          </Btn>
+          <p v-if="moveError" class="error-msg">{{ moveError }}</p>
+        </Panel>
+
         <!-- Dimensions -->
         <Panel v-if="container.width_cm" :title="'Dimensioni'">
           <p class="dim-text mono">
@@ -173,7 +187,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useContainersStore, type ContainerDetail } from '@/stores/containers'
+import { useContainersStore, type ContainerDetail, type ContainerSummary } from '@/stores/containers'
 import { useItemsStore, type ItemSummary } from '@/stores/items'
 import { type DraftItemSummary } from '@/stores/inbox'
 import { useAuthStore } from '@/stores/auth'
@@ -183,6 +197,7 @@ import Panel from '@/components/primitives/Panel.vue'
 import Photo from '@/components/primitives/Photo.vue'
 import QRCodeDisplay from '@/components/containers/QRCodeDisplay.vue'
 import ContainerCard from '@/components/containers/ContainerCard.vue'
+import NestingSelector from '@/components/containers/NestingSelector.vue'
 import ItemCard from '@/components/items/ItemCard.vue'
 import ItemReviewCard from '@/views/items/ItemReviewCard.vue'
 
@@ -197,6 +212,10 @@ const container = ref<ContainerDetail | null>(null)
 const confirmedItems = ref<ItemSummary[]>([])
 const draftItems = ref<ItemSummary[]>([])
 const activeTab = ref<'confirmed' | 'draft'>('confirmed')
+const availableContainers = ref<ContainerSummary[]>([])
+const moveTargetId = ref<string | null>(null)
+const moving = ref(false)
+const moveError = ref('')
 
 const hasDrafts = computed(() => draftItems.value.length > 0)
 
@@ -212,10 +231,27 @@ async function load(): Promise<void> {
     store.fetchContainer(props.houseId, props.containerId),
     itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'confirmed' }),
     itemsStore.fetchItems(props.houseId, { container_id: props.containerId, status: 'draft_ai_done,draft_ai_failed' }),
+    store.fetchContainers(props.houseId, { size: 100 }),
   ])
   container.value = c
   confirmedItems.value = confirmedPage.items
   draftItems.value = draftPage.items
+  availableContainers.value = store.containers
+  moveTargetId.value = c.parent?.id ?? null
+}
+async function handleMove(): Promise<void> {
+  if (!container.value) return
+  moving.value = true
+  moveError.value = ''
+  try {
+    container.value = await store.moveContainer(props.houseId, props.containerId, moveTargetId.value)
+    await load()
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: { detail?: { detail?: string }} } }
+    moveError.value = e.response?.data?.detail?.detail ?? String(err)
+  } finally {
+    moving.value = false
+  }
 }
 async function handleClose(): Promise<void> {
   container.value = await store.closeContainer(props.houseId, props.containerId)

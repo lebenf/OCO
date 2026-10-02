@@ -65,10 +65,10 @@
             </button>
           </div>
 
-          <ContainerCombobox
+          <ContainerMultiPickList
+            v-model:selected="pickedIds"
             :house-id="houseId"
-            :placeholder="$t('transfer.detail.container_code_placeholder')"
-            @select="onComboboxSelect"
+            :exclude-ids="transfer.containers.map((c) => c.id)"
           />
 
           <button class="qr-btn" @click="showQRScanner = true">
@@ -83,6 +83,9 @@
           <p v-if="addError" class="error-msg">{{ addError }}</p>
           <div class="modal-actions">
             <Btn kind="ghost" @click="showAddModal = false">{{ $t('container.edit.cancel') }}</Btn>
+            <Btn :disabled="pickedIds.size === 0 || adding" @click="handleAddPicked">
+              {{ adding ? $t('container.edit.saving') : $t('transfer.detail.add_selected', { n: pickedIds.size }) }}
+            </Btn>
           </div>
         </div>
       </div>
@@ -101,12 +104,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useTransfersStore, type TransferDetail } from '@/stores/transfers'
-import { useContainersStore, type ContainerSummary } from '@/stores/containers'
+import { useContainersStore } from '@/stores/containers'
 import VolumeIndicator from '@/components/transfers/VolumeIndicator.vue'
 import ContainerTransferList from '@/components/transfers/ContainerTransferList.vue'
-import ContainerCombobox from '@/components/containers/ContainerCombobox.vue'
+import ContainerMultiPickList from '@/components/containers/ContainerMultiPickList.vue'
 import QRScannerOverlay from '@/components/containers/QRScannerOverlay.vue'
 import StatusBadge from '@/components/primitives/StatusBadge.vue'
 import Panel from '@/components/primitives/Panel.vue'
@@ -120,6 +123,8 @@ const transfer = ref<TransferDetail | null>(null)
 const showAddModal = ref(false)
 const showQRScanner = ref(false)
 const addError = ref('')
+const pickedIds = ref<Set<string>>(new Set())
+const adding = ref(false)
 
 async function load(): Promise<void> {
   transfer.value = await store.fetchTransfer(props.houseId, props.transferId)
@@ -147,8 +152,19 @@ async function addContainerById(id: string): Promise<void> {
   }
 }
 
-async function onComboboxSelect(c: ContainerSummary): Promise<void> {
-  await addContainerById(c.id)
+async function handleAddPicked(): Promise<void> {
+  if (pickedIds.value.size === 0) return
+  adding.value = true
+  addError.value = ''
+  try {
+    transfer.value = await store.addContainers(props.houseId, props.transferId, Array.from(pickedIds.value))
+    pickedIds.value = new Set()
+    showAddModal.value = false
+  } catch {
+    addError.value = 'Errore durante l\'aggiunta'
+  } finally {
+    adding.value = false
+  }
 }
 
 async function onQRScanned(code: string): Promise<void> {
@@ -162,6 +178,13 @@ async function onQRScanned(code: string): Promise<void> {
     showAddModal.value = true
   }
 }
+
+watch(showAddModal, (open) => {
+  if (open) {
+    pickedIds.value = new Set()
+    addError.value = ''
+  }
+})
 
 onMounted(load)
 </script>

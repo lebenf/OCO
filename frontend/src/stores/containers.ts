@@ -144,6 +144,11 @@ export const useContainersStore = defineStore('containers', () => {
     return res.data
   }
 
+  async function moveContainer(houseId: string, containerId: string, parentId: string | null): Promise<ContainerDetail> {
+    const res = await api.post<ContainerDetail>(`/houses/${houseId}/containers/${containerId}/move`, { parent_id: parentId })
+    return res.data
+  }
+
   async function uploadPhoto(houseId: string, containerId: string, file: File, phase?: string): Promise<PhotoOut> {
     const form = new FormData()
     form.append('file', file)
@@ -166,6 +171,10 @@ export const useContainersStore = defineStore('containers', () => {
     return `/api/houses/${houseId}/containers/${containerId}/qr`
   }
 
+  function thermalLabelUrl(houseId: string, containerId: string): string {
+    return `/api/houses/${houseId}/containers/${containerId}/label.png`
+  }
+
   return {
     containers,
     total,
@@ -178,9 +187,11 @@ export const useContainersStore = defineStore('containers', () => {
     updateContainer,
     closeContainer,
     sealContainer,
+    moveContainer,
     uploadPhoto,
     deletePhoto,
     deleteContainer,
     qrUrl,
+    thermalLabelUrl,
   }
 })

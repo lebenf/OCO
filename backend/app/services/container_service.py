@@ -2,13 +2,14 @@
 # Copyright 2026 Lorenzo Benfenati
 import io
 import math
+import textwrap
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 import qrcode
 from fastapi import HTTPException, UploadFile
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
@@ -86,6 +87,54 @@ def generate_label_sheet_pdf(code: str, url: str, count: int, columns: int) -> b
         pdf.drawCentredString(x0 + cell_width / 2, y0 + padding + 2, code)
 
     pdf.save()
+    return buf.getvalue()
+
+
+def generate_thermal_label_image(code: str, description: str | None, url: str, width: int = 576) -> bytes:
+    """Single PNG label: QR code + container code + description, for thermal label printers."""
+    qr = qrcode.QRCode(border=1)
+    qr.add_data(url)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white").convert("L")
+
+    margin = width // 24
+    qr_size = width - 2 * margin
+    qr_img = qr_img.resize((qr_size, qr_size), Image.NEAREST)
+
+    code_font = ImageFont.load_default(size=max(20, width // 14))
+    desc_font = ImageFont.load_default(size=max(14, width // 22))
+    line_gap = max(4, width // 96)
+
+    desc_lines = textwrap.wrap(description, width=28) if description else []
+
+    measurer = ImageDraw.Draw(Image.new("L", (1, 1)))
+    code_bbox = measurer.textbbox((0, 0), code, font=code_font)
+    code_h = code_bbox[3] - code_bbox[1]
+    desc_line_heights = [
+        measurer.textbbox((0, 0), line, font=desc_font)[3] - measurer.textbbox((0, 0), line, font=desc_font)[1]
+        for line in desc_lines
+    ]
+
+    total_height = (
+        margin + qr_size + line_gap * 2 + code_h
+        + sum(h + line_gap for h in desc_line_heights)
+        + margin
+    )
+
+    img = Image.new("L", (width, int(total_height)), 255)
+    img.paste(qr_img, (margin, margin))
+    draw = ImageDraw.Draw(img)
+
+    y = margin + qr_size + line_gap * 2
+    draw.text((width / 2, y), code, font=code_font, fill=0, anchor="ma")
+    y += code_h + line_gap
+
+    for line, h in zip(desc_lines, desc_line_heights):
+        draw.text((width / 2, y), line, font=desc_font, fill=0, anchor="ma")
+        y += h + line_gap
+
+    buf = io.BytesIO()
+    img.convert("RGB").save(buf, format="PNG")
     return buf.getvalue()
 
 
@@ -256,6 +305,68 @@ async def update_container(container: Container, data: ContainerUpdate, db: Asyn
         setattr(container, field, value)
     if data.width_cm is not None and data.depth_cm is not None and data.height_cm is not None:
         container.volume_liters = data.width_cm * data.depth_cm * data.height_cm / 1000
+    await db.commit()
+    await db.refresh(container)
+    return container
+
+
+async def _collect_descendant_ids(container_id: str, db: AsyncSession) -> set[str]:
+    ids: set[str] = set()
+    frontier = [container_id]
+    while frontier:
+        rows = (
+            await db.execute(select(Container.id).where(Container.parent_id.in_(frontier)))
+        ).scalars().all()
+        frontier = [r for r in rows if r not in ids]
+        ids.update(frontier)
+    return ids
+
+
+async def _subtree_depth(container_id: str, db: AsyncSession) -> int:
+    children = (
+        await db.execute(select(Container.id).where(Container.parent_id == container_id))
+    ).scalars().all()
+    if not children:
+        return 0
+    return 1 + max([await _subtree_depth(c, db) for c in children])
+
+
+async def move_container(container: Container, new_parent_id: str | None, db: AsyncSession) -> Container:
+    if new_parent_id == container.parent_id:
+        return container
+
+    new_level = 0
+    descendant_ids = await _collect_descendant_ids(container.id, db)
+
+    if new_parent_id:
+        if new_parent_id == container.id or new_parent_id in descendant_ids:
+            raise HTTPException(
+                status_code=400,
+                detail={"detail": "Cannot move a container into itself or one of its own contents", "code": "INVALID_PARENT"},
+            )
+        new_parent = await db.get(Container, new_parent_id)
+        if not new_parent or new_parent.house_id != container.house_id:
+            raise HTTPException(status_code=404, detail={"detail": "Parent container not found", "code": "NOT_FOUND"})
+        new_level = new_parent.nesting_level + 1
+
+    subtree_depth = await _subtree_depth(container.id, db)
+    if new_level + subtree_depth > MAX_NESTING_LEVEL:
+        raise HTTPException(
+            status_code=400,
+            detail={"detail": f"Max nesting depth ({MAX_NESTING_LEVEL}) reached", "code": "MAX_NESTING_DEPTH"},
+        )
+
+    level_diff = new_level - container.nesting_level
+    container.parent_id = new_parent_id
+    container.nesting_level = new_level
+
+    if level_diff and descendant_ids:
+        descendants = (
+            await db.execute(select(Container).where(Container.id.in_(descendant_ids)))
+        ).scalars().all()
+        for descendant in descendants:
+            descendant.nesting_level += level_diff
+
     await db.commit()
     await db.refresh(container)
     return container

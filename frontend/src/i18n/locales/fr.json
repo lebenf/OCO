@@ -96,6 +96,9 @@
       "add_item": "Ajouter un objet",
       "qr": "QR Code",
       "print_labels": "Imprimer les étiquettes",
+      "move_into": "Déplacer dans une autre boîte",
+      "move_save": "Déplacer",
+      "move_moving": "Déplacement...",
       "children": "Boîtes imbriquées",
       "items": "Objets",
       "in_review": "En révision",
@@ -135,7 +138,8 @@
       "label": "Code de la boîte"
     },
     "qr": {
-      "download": "Télécharger le QR"
+      "download": "Télécharger le QR",
+      "download_thermal": "Télécharger l'étiquette (imprimante thermique)"
     },
     "redirect": {
       "loading": "Recherche du conteneur...",
@@ -255,7 +259,7 @@
       "complete": "Terminer le transfert",
       "containers": "Boîtes",
       "add_container": "Ajouter une boîte",
-      "container_code_placeholder": "ex. A-001",
+      "add_selected": "Ajouter {n} boîtes",
       "no_containers": "Aucune boîte dans le transfert"
     },
     "create": {

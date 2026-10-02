@@ -20,6 +20,7 @@ from app.schemas.container import (
     ContainerClose,
     ContainerCreate,
     ContainerDetail,
+    ContainerMove,
     ContainerSummary,
     ContainerUpdate,
     PhotoOut,
@@ -31,9 +32,11 @@ from app.services.container_service import (
     delete_container_with_files,
     delete_photo,
     generate_label_sheet_pdf,
+    generate_thermal_label_image,
     get_container_detail,
     get_container_or_404,
     list_containers,
+    move_container,
     save_photo,
     seal_container,
     update_container,
@@ -136,6 +139,18 @@ async def update_container_endpoint(
     return await get_container_detail(container, db)
 
 
+@router.post("/{house_id}/containers/{container_id}/move", response_model=ContainerDetail)
+async def move_container_endpoint(
+    container_id: str,
+    body: ContainerMove,
+    house: House = Depends(get_house_member),
+    db: AsyncSession = Depends(get_db),
+) -> ContainerDetail:
+    container = await get_container_or_404(container_id, house.id, db)
+    container = await move_container(container, body.parent_id, db)
+    return await get_container_detail(container, db)
+
+
 @router.post("/{house_id}/containers/{container_id}/close", response_model=ContainerDetail)
 async def close_container_endpoint(
     container_id: str,
@@ -233,4 +248,21 @@ async def get_labels_pdf(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="labels-{container.code}.pdf"'},
+    )
+
+
+@router.get("/{house_id}/containers/{container_id}/label.png")
+async def get_thermal_label_png(
+    container_id: str,
+    house: House = Depends(get_house_member),
+    width: int = Query(576, ge=200, le=1200),
+    db: AsyncSession = Depends(get_db),
+) -> Response:
+    container = await get_container_or_404(container_id, house.id, db)
+    url = f"{settings.APP_HOST}/containers/{container.code}"
+    png_bytes = generate_thermal_label_image(container.code, container.description, url, width=width)
+    return Response(
+        content=png_bytes,
+        media_type="image/png",
+        headers={"Content-Disposition": f'attachment; filename="label-{container.code}.png"'},
     )

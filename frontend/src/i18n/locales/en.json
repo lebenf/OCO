@@ -96,6 +96,9 @@
       "add_item": "Add item",
       "qr": "QR Code",
       "print_labels": "Print labels",
+      "move_into": "Move into another box",
+      "move_save": "Move",
+      "move_moving": "Moving...",
       "children": "Nested containers",
       "items": "Items",
       "in_review": "In review",
@@ -135,7 +138,8 @@
       "label": "Container code"
     },
     "qr": {
-      "download": "Download QR"
+      "download": "Download QR",
+      "download_thermal": "Download label (thermal printer)"
     },
     "redirect": {
       "loading": "Looking up container...",
@@ -255,7 +259,7 @@
       "complete": "Complete transfer",
       "containers": "Containers",
       "add_container": "Add container",
-      "container_code_placeholder": "e.g. A-001",
+      "add_selected": "Add {n} boxes",
       "no_containers": "No containers in this transfer"
     },
     "create": {

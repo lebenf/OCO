@@ -96,6 +96,9 @@
       "add_item": "Aggiungi oggetto",
       "qr": "QR Code",
       "print_labels": "Stampa etichette",
+      "move_into": "Sposta in un'altra scatola",
+      "move_save": "Sposta",
+      "move_moving": "Spostamento...",
       "children": "Scatole annidate",
       "items": "Oggetti",
       "in_review": "In revisione",
@@ -135,7 +138,8 @@
       "label": "Codice scatola"
     },
     "qr": {
-      "download": "Scarica QR"
+      "download": "Scarica QR",
+      "download_thermal": "Scarica etichetta (stampante termica)"
     },
     "redirect": {
       "loading": "Ricerca scatola in corso...",
@@ -255,7 +259,7 @@
       "complete": "Completa trasferimento",
       "containers": "Scatole",
       "add_container": "Aggiungi scatola",
-      "container_code_placeholder": "es. A-001",
+      "add_selected": "Aggiungi {n} scatole",
       "no_containers": "Nessuna scatola nel trasferimento"
     },
     "create": {

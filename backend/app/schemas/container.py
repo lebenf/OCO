@@ -37,6 +37,10 @@ class ContainerUpdate(BaseModel):
         return sanitize_name(v) if v is not None else v
 
 
+class ContainerMove(BaseModel):
+    parent_id: str | None
+
+
 class ContainerClose(BaseModel):
     current_location_id: str | None = None
     destination_location_id: str | None = None
